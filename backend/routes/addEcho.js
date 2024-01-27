@@ -1,13 +1,16 @@
-const uploadImage = require('../utils/uploadImage');
+const { IndexFacesCommand, SearchUsersCommand } = require('@aws-sdk/client-rekognition');
+const { v4: uuidv4 } = require('uuid');
+const { rekognitionClient } = require('../awsConfig');
 const addEntity = require('../utils/addEntity');
 const updateEntity = require('../utils/updateEntity');
-const { rekognitionClient } = require('../awsConfig');
-const { CreateCollectionCommand, IndexFacesCommand, SearchFacesCommand } = require('@aws-sdk/client-rekognition');
+const uploadImage = require('../utils/uploadImage');
 
 const addEcho = async(req, res, next) => {
+  const echoId = uuidv4();
+  const imageKey = uuidv4();
   const echo = {
-    "echo": {
-      "S": req.body.echo
+    "echoId": {
+      "S": echoId
     },
     "date": {
       "S": req.body.date
@@ -19,62 +22,107 @@ const addEcho = async(req, res, next) => {
       "S": req.body.caption
     },
     "s3ImageKey": {
-      "S": req.body.imageKey
+      "S": imageKey
     },
     "share": {
       "S": ""
     }
   };
 
-  const s3Response = await uploadImage(req.body.image, process.env.AWS_S3_BUCKET_ECHOES, req.body.imageKey);
+  const s3Response = await uploadImage(req.body.image, process.env.AWS_S3_BUCKET_ECHOES, imageKey);
   const dynamoDBResponse = await addEntity(echo, process.env.AWS_DYNAMODB_TABLE_ECHOES);
 
-  const temporaryCollectionId = Date.now().toString();
-  const rekognitionCreateCollectionResponse = await rekognitionClient.send(
-    new CreateCollectionCommand({
-      CollectionId: temporaryCollectionId
-    })
-  );
-  const rekognitionIndexFacesResponse = await rekognitionClient.send(
+  // const temporaryCollectionId = Date.now().toString();
+  // const rekognitionCreateCollectionResponse = await rekognitionClient.send(
+  //   new CreateCollectionCommand({
+  //     CollectionId: temporaryCollectionId
+  //   })
+  // );
+
+  const rekognitionTargetIndexFacesResponse = await rekognitionClient.send(
     new IndexFacesCommand({
-      CollectionId: temporaryCollectionId,
+      CollectionId: req.body.userId,
       Image: {
         S3Object: {
           Bucket: process.env.AWS_S3_BUCKET_ECHOES,
-          Name: req.body.imageKey
+          Name: imageKey
         }
       },
-      ExternalImageId: req.body.echo,
+      ExternalImageId: echoId,
       DetectionAttributes: ["ALL"],
       QualityFilter: "AUTO"
     })
   );
-  for (let i = 0; i < rekognitionIndexFacesResponse.FaceRecords.length; i++) {
-    const faceRecord = rekognitionIndexFacesResponse.FaceRecords[i];
-    const faceId = faceRecord.Face.FaceId;
 
-    const rekognitionIndexFacesResponse = await rekognitionClient.send(
-      new SearchFacesCommand({
-        CollectionId: req.body.user,
-        FaceId: faceId,
-        MaxFaces: 1
+  // const rekognitionDetectFacesResponse = await rekognitionClient.send(
+  //   new DetectFacesCommand({
+  //     Image: {
+  //       S3Object: {
+  //         Bucket: process.env.AWS_S3_BUCKET_ECHOES,
+  //         Name: imageKey
+  //       }
+  //     },
+  //     Attributes: ["ALL"]
+  //   })
+  // );
+
+  // for (let i = 0; i < rekognitionDetectFacesResponse.FaceDetails.length; i++) {
+  //   const rekognitionSearchFacesByImageResponse = await rekognitionClient.send(
+  //     new SearchFacesByImageCommand({
+  //       CollectionId: req.body.userId,
+  //       Image: {
+  //         S3Object: {
+  //           Bucket: process.env.AWS_S3_BUCKET_ECHOES,
+  //           Name: imageKey
+  //         }
+  //       },
+  //       MaxFaces: 1,
+  //       QualityFilter: "AUTO"
+  //     })
+  //   );
+  // }
+
+  for (let i = 0; i < rekognitionTargetIndexFacesResponse.FaceRecords.length; i++) {
+    const rekognitionSearchUsersResponse = await rekognitionClient.send(
+      new SearchUsersCommand({
+        CollectionId: req.body.userId,
+        FaceId: rekognitionTargetIndexFacesResponse.FaceRecords[i].Face.FaceId,
+        MaxUsers: 1
       })
     );
-    const match = rekognitionIndexFacesResponse.FaceMatches[0].ExternalImageId;
 
-    const updateEntityResponse = await updateEntity(
+    // const rekognitionSourceIndexFacesResponse = await rekognitionClient.send(
+    //   new SearchFacesCommand({
+    //     CollectionId: req.body.userId,
+    //     FaceId: faceId,
+    //     MaxFaces: 1
+    //   })
+    // );
+    const friendId = rekognitionSearchUsersResponse.UserMatches[0].User.UserId;
+
+    const updateUserEntityResponse = await updateEntity(
       {
-        "user": {
-          "S": match
+        "userId": {
+          "S": req.body.userId
         }
       },
       process.env.AWS_DYNAMODB_TABLE_USERS,
-      `SET echoes = list_append(echoes, :echo)`,
-      { ':echo': req.body.imageKey }
+      "SET echoes = list_append(echoes, :value)",
+      { ':value': { "L": [ { "S": echoId } ] } }
+    );
+    const updateFriendEntityResponse = await updateEntity(
+      {
+        "userId": {
+          "S": friendId
+        }
+      },
+      process.env.AWS_DYNAMODB_TABLE_USERS,
+      "SET echoes = list_append(echoes, :value)",
+      { ':value': { "L": [ { "S": echoId } ] } }
     );
   }
 
-  res.send("success");
+  res.send(s3Response.$metadata.httpStatusCode === 200 && dynamoDBResponse.$metadata.httpStatusCode === 200 && rekognitionTargetIndexFacesResponse.$metadata.httpStatusCode === 200);
 };
 
 module.exports = addEcho;

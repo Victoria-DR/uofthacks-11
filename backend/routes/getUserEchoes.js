@@ -1,11 +1,12 @@
-const getEntity = require('../utils/getEntity');
+const bufferToBase64 = require('../utils/bufferToBase64');
 const downloadImage = require('../utils/downloadImage');
+const getEntity = require('../utils/getEntity');
 
 const getUserEchoes = async(req, res, next) => {
   const dynamoDBResponse = await getEntity(
     {
-      "user": {
-        "S": req.body.user
+      "userId": {
+        "S": req.body.userId
       }
     },
     process.env.AWS_DYNAMODB_TABLE_USERS
@@ -23,21 +24,21 @@ const getUserEchoes = async(req, res, next) => {
 const echoHelper = async(echoId) => {
   const dynamoDBResponse = await getEntity(
     {
-      "echo": {
+      "echoId": {
         "S": echoId
       }
     },
     process.env.AWS_DYNAMODB_TABLE_ECHOES
   );
   const s3Response = await downloadImage(process.env.AWS_S3_BUCKET_ECHOES, dynamoDBResponse.Item.s3ImageKey.S);
-  const image = await s3Response.Body.transformToString();
+  const echoImage = await s3Response.Body.transformToString();
 
   return {
-    "echo": dynamoDBResponse.Item.echo.S,
+    "echoId": dynamoDBResponse.Item.echo.S,
     "date": dynamoDBResponse.Item.date.S,
     "location": dynamoDBResponse.Item.location.S,
     "caption": dynamoDBResponse.Item.caption.S,
-    "image": image,
+    "image": bufferToBase64(echoImage),
     "share": dynamoDBResponse.Item.share.S
   };
 };

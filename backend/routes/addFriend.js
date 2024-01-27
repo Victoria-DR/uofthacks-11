@@ -1,4 +1,4 @@
-const { IndexFacesCommand } = require('@aws-sdk/client-rekognition');
+const { AssociateFacesCommand, CreateUserCommand, IndexFacesCommand } = require('@aws-sdk/client-rekognition');
 const { v4: uuidv4 } = require('uuid');
 const { rekognitionClient } = require('../awsConfig');
 const addEntity = require('../utils/addEntity');
@@ -46,7 +46,14 @@ const addFriend = async(req, res, next) => {
     { ":value": { "L": [ { "S": friendId } ] } }
   );
 
-  const rekognitionResponse = await rekognitionClient.send(
+  const rekognitionCreateUserResponse = await rekognitionClient.send(
+    new CreateUserCommand({
+      CollectionId: req.body.userId,
+      UserId: friendId
+    })
+  );
+
+  const rekognitionIndexFacesResponse = await rekognitionClient.send(
     new IndexFacesCommand({
       CollectionId: req.body.userId,
       Image: {
@@ -62,7 +69,15 @@ const addFriend = async(req, res, next) => {
     })
   );
 
-  res.send(s3ResponseAddFriend.$metadata.httpStatusCode === 200 && dynamoDBResponseAddFriend.$metadata.httpStatusCode === 200 && dynamoDBResponseUpdateUser.$metadata.httpStatusCode === 200 && rekognitionResponse.$metadata.httpStatusCode === 200);
+  const rekognitionAssociateFacesResponse = await rekognitionClient.send(
+    new AssociateFacesCommand({
+      CollectionId: req.body.userId,
+      UserId: friendId,
+      FaceIds: [ rekognitionIndexFacesResponse.FaceRecords[0].Face.FaceId ]
+    })
+  );
+
+  res.send(s3ResponseAddFriend.$metadata.httpStatusCode === 200 && dynamoDBResponseAddFriend.$metadata.httpStatusCode === 200 && dynamoDBResponseUpdateUser.$metadata.httpStatusCode === 200 && rekognitionCreateUserResponse.$metadata.httpStatusCode === 200 && rekognitionIndexFacesResponse.$metadata.httpStatusCode === 200 && rekognitionAssociateFacesResponse.$metadata.httpStatusCode === 200);
 };
 
 module.exports = addFriend;
