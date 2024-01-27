@@ -1,7 +1,12 @@
-const uploadImage = require('../utils/uploadImage');
+const updateEntity = require('../utils/updateEntity');
 
 const addFriend = async(req, res, next) => {
-  const response = await uploadImage(req.body.image, process.env.AWS_S3_BUCKET_USERS, req.body.key);
+  const response = await updateEntity(
+    req.body.key,
+    process.env.AWS_DYNAMODB_TABLE_USERS,
+    `SET friends = list_append(friends, :friend)`,
+    { ':friend': req.body.friend }
+  );
   res.send(response);
 };
 
