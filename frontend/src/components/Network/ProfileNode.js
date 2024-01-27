@@ -1,18 +1,106 @@
 import * as THREE from 'three';
-import { useLayoutEffect, useRef, useState } from 'react';
+import {
+    useLayoutEffect,
+    useRef,
+    useState,
+    useMemo,
+    createContext,
+    forwardRef,
+    useContext,
+} from 'react';
 import { extend, useFrame } from '@react-three/fiber';
 import {
     Image,
     useScroll,
     Billboard,
     Text,
+    QuadraticBezierLine,
 } from '@react-three/drei';
 import { easing, geometry } from 'maath';
 
 extend(geometry);
 
-export function ProfileNode({ children, ...props }) {
-    const ref = useRef();
+const context = createContext();
+
+const Circle = forwardRef(
+    (
+        {
+            children,
+            opacity = 0,
+            radius = 0.05,
+            segments = 32,
+            color = '#ff1050',
+            ...props
+        },
+        ref
+    ) => (
+        <mesh ref={ref} {...props}>
+            <circleGeometry args={[radius, segments]} />
+            <meshBasicMaterial
+                transparent={opacity < 1}
+                opacity={opacity}
+                color={color}
+            />
+            {children}
+        </mesh>
+    )
+);
+
+export const ProfileNodes = ({ children }) => {
+    const [nodes, set] = useState([]);
+    const lines = useMemo(() => {
+        const lines = [];
+        for (let node of nodes)
+            node.connectedTo
+                .map(ref => [node.position, ref.current.position])
+                .forEach(([start, end]) => {
+                    let startVector = new THREE.Vector3(...start);
+                    lines.push({
+                        start: startVector.clone().add({ x: 0.35, y: 0, z: 0 }),
+                        end: end.clone().add({ x: -0.35, y: 0, z: 0 }),
+                    })
+                }
+                );
+        return lines;
+    }, [nodes]);
+
+    return (
+        <context.Provider value={set}>
+            <group>
+                {lines.map((line, index) => (
+                    <group>
+                        <QuadraticBezierLine
+                            key={index}
+                            {...line}
+                            color="white"
+                            dashed
+                            dashScale={50}
+                            gapSize={20}
+                        />
+                        <QuadraticBezierLine
+                            key={index}
+                            {...line}
+                            color="white"
+                            lineWidth={2}
+                            transparent
+                            opacity={0.15}
+                        />
+                    </group>
+                ))}
+            </group>
+            {children}
+            {lines.map(({ start, end }, index) => (
+                <group key={index} position-z={1}>
+                    <Circle position={start} />
+                    <Circle position={end} />
+                </group>
+            ))}
+        </context.Provider>
+    );
+};
+
+export const ProfileNode = forwardRef(({ children, ...props }, ref) => {
+    const set = useContext(context);
     // const scroll = useScroll();
     const [hovered, hover] = useState(null);
     // useFrame((state, delta) => {
@@ -22,6 +110,16 @@ export function ProfileNode({ children, ...props }) {
     //     // state.camera.lookAt(0, 0, 0);
     //     // state.camera.position.set(0, 6, 10);
     // });
+
+    const state = useMemo(
+        () => ({ position: props.position, connectedTo: props.connectedTo }),
+        [props]
+    );
+    useLayoutEffect(() => {
+        set(nodes => [...nodes, state]);
+        return () => void set(nodes => nodes.filter(n => n !== state));
+    }, [state, props]);
+
     return (
         <group ref={ref} {...props}>
             <Cards
@@ -58,7 +156,7 @@ export function ProfileNode({ children, ...props }) {
             <ActiveCard hovered={hovered} />
         </group>
     );
-}
+})
 
 function Cards({
     category,
