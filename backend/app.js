@@ -13,6 +13,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.use("/v1/api", require("./routes/userRouter"));
+
 app.post('/add-echo', addEcho);
 app.post('/add-friend', addFriend);
 app.post('/get-all-echoes', getAllEchoes);
