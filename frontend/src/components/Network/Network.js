@@ -1,4 +1,4 @@
-import React, { createRef } from 'react';
+import React, { createRef, useEffect } from 'react';
 import { Canvas, extend } from '@react-three/fiber';
 import {
     ScrollControls,
@@ -6,12 +6,19 @@ import {
 } from '@react-three/drei';
 import { geometry } from 'maath';
 import { ProfileNode, ProfileNodes } from './ProfileNode';
+import {
+    calculateConnections,
+    getCommonEchoes,
+} from '../../helpers/network.helpers';
 
 extend(geometry);
 
 const Network = ({profileData}) => {
     const profileNodeRefs = Object.fromEntries(profileData.map((profile) => [profile.id, createRef()]))
-console.log(profileData)
+    const processedProfileData = calculateConnections(profileData);
+
+    const commonEchoes = getCommonEchoes(profileData);
+
     return (
         <Canvas
             dpr={[1, 1.5]}
@@ -24,7 +31,7 @@ console.log(profileData)
         >
             <ScrollControls infinite makeDefault>
                 <ProfileNodes>
-                    {profileData.map((profile, i) => (
+                    {processedProfileData.map((profile, i) => (
                         <ProfileNode
                             key={i}
                             position={profile.position}
@@ -36,7 +43,7 @@ console.log(profileData)
                         />
                     ))}
                 </ProfileNodes>
-                <MapControls makeDefault={false}  />
+                <MapControls makeDefault={false} />
             </ScrollControls>
         </Canvas>
     );
