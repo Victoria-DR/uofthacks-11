@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-const signUp = require('./routes/signUp');
+const createUser = require('./routes/createUser');
 
 const addEcho = require('./routes/addEcho');
 const addFriend = require('./routes/addFriend');
@@ -18,7 +18,7 @@ const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(cors());
 
-app.post('/sign-up', signUp);
+app.post('/create-user', createUser);
 
 app.post('/add-echo', addEcho);
 app.post('/add-friend', addFriend);
