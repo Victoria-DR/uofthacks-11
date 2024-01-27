@@ -32,13 +32,6 @@ const addEcho = async(req, res, next) => {
   const s3Response = await uploadImage(req.body.image, process.env.AWS_S3_BUCKET_ECHOES, imageKey);
   const dynamoDBResponse = await addEntity(echo, process.env.AWS_DYNAMODB_TABLE_ECHOES);
 
-  // const temporaryCollectionId = Date.now().toString();
-  // const rekognitionCreateCollectionResponse = await rekognitionClient.send(
-  //   new CreateCollectionCommand({
-  //     CollectionId: temporaryCollectionId
-  //   })
-  // );
-
   const rekognitionTargetIndexFacesResponse = await rekognitionClient.send(
     new IndexFacesCommand({
       CollectionId: req.body.userId,
@@ -54,34 +47,6 @@ const addEcho = async(req, res, next) => {
     })
   );
 
-  // const rekognitionDetectFacesResponse = await rekognitionClient.send(
-  //   new DetectFacesCommand({
-  //     Image: {
-  //       S3Object: {
-  //         Bucket: process.env.AWS_S3_BUCKET_ECHOES,
-  //         Name: imageKey
-  //       }
-  //     },
-  //     Attributes: ["ALL"]
-  //   })
-  // );
-
-  // for (let i = 0; i < rekognitionDetectFacesResponse.FaceDetails.length; i++) {
-  //   const rekognitionSearchFacesByImageResponse = await rekognitionClient.send(
-  //     new SearchFacesByImageCommand({
-  //       CollectionId: req.body.userId,
-  //       Image: {
-  //         S3Object: {
-  //           Bucket: process.env.AWS_S3_BUCKET_ECHOES,
-  //           Name: imageKey
-  //         }
-  //       },
-  //       MaxFaces: 1,
-  //       QualityFilter: "AUTO"
-  //     })
-  //   );
-  // }
-
   for (let i = 0; i < rekognitionTargetIndexFacesResponse.FaceRecords.length; i++) {
     const rekognitionSearchUsersResponse = await rekognitionClient.send(
       new SearchUsersCommand({
@@ -91,13 +56,6 @@ const addEcho = async(req, res, next) => {
       })
     );
 
-    // const rekognitionSourceIndexFacesResponse = await rekognitionClient.send(
-    //   new SearchFacesCommand({
-    //     CollectionId: req.body.userId,
-    //     FaceId: faceId,
-    //     MaxFaces: 1
-    //   })
-    // );
     const friendId = rekognitionSearchUsersResponse.UserMatches[0].User.UserId;
 
     const updateUserEntityResponse = await updateEntity(
