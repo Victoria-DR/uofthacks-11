@@ -7,8 +7,7 @@ const signUp = require('./routes/signUp');
 const addEcho = require('./routes/addEcho');
 const addFriend = require('./routes/addFriend');
 
-const getAllEchoes = require('./routes/getAllEchoes');
-const getFriendEchoes = require('./routes/getFriendEchoes');
+const getUserEchoes = require('./routes/getUserEchoes');
 const getEcho = require('./routes/getEcho');
 
 const getUser = require('./routes/getUser');
@@ -26,8 +25,7 @@ app.post('/sign-up', signUp);
 app.post('/add-echo', addEcho);
 app.post('/add-friend', addFriend);
 
-app.post('/get-all-echoes', getAllEchoes);
-app.post('/get-friend-echoes', getFriendEchoes);
+app.post('/get-user-echoes', getUserEchoes);
 app.post('/get-echo', getEcho);
 
 app.post('/get-user', getUser);
