@@ -20,7 +20,7 @@ import { easing, geometry } from 'maath';
 
 extend(geometry);
 
-const context = createContext();
+export const context = createContext();
 
 const Circle = forwardRef(
     (

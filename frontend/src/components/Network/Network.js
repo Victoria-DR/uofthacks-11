@@ -20,9 +20,12 @@ extend(geometry);
 const Network = ({profileData}) => {
     const profileNodeRefs = Object.fromEntries(profileData.map((profile) => [profile.id, createRef()]))
     const processedProfileData = calculateConnections(profileData);
-
+    
     const commonEchoes = getCommonEchoes(profileData);
     const echoesByProfileCombination = groupCommonEchoesByProfileCombination(commonEchoes)
+    const echoStackRefs = Object.entries(echoesByProfileCombination).map(
+        ([k, v], i) => createRef()
+    );
 
     const allEchoes = getAllEchoes(profileData);
 
@@ -38,17 +41,20 @@ const Network = ({profileData}) => {
         >
             <ScrollControls infinite makeDefault>
                 <ProfileNodes>
-                    {processedProfileData.map((profile, i) => (
-                        <ProfileNode
-                            key={i}
-                            position={profile.position}
-                            url={profile.profilePicture}
-                            ref={profileNodeRefs[profile.id]}
-                            connectedTo={profile.connectedTo.map(
-                                id => profileNodeRefs[id]
-                            )}
-                        />
-                    ))}
+                    {
+                        processedProfileData.map((profile, i) => (
+                            <ProfileNode
+                                key={i}
+                                position={profile.position}
+                                url={profile.profilePicture}
+                                ref={profileNodeRefs[profile.id]}
+                                // connectedTo={profile.connectedTo.map(
+                                //     id => profileNodeRefs[id]
+                                // )}
+                                connectedTo={[]}
+                            />
+                        ))
+                    }
                     {
                         Object.entries(echoesByProfileCombination).map(([k, v], i) => {
                             const profiles = k.split(',').map(id => profileData.find(profile => profile.id === Number(id)))
@@ -61,6 +67,8 @@ const Network = ({profileData}) => {
                                     position={
                                         calculateCenter(profiles)
                                     }
+                                    ref={echoStackRefs[i]}
+                                    connectedTo={profiles.map(profile => profileNodeRefs[profile.id])}
                                 />
                             )
                         })

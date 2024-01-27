@@ -25,7 +25,7 @@ export const profileData = [
             new Echo(0, 'This is an echo', '2021-01-01', 'img1.jpg'),
             new Echo(1, 'This is an echo', '2021-01-01', 'img1.jpg'),
         ],
-        [10, 10, 0]
+        [12, 15, 0]
         // [],
     ),
     new Profile(

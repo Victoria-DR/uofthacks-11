@@ -1,9 +1,21 @@
-import React from 'react';
-import { Card } from './ProfileNode';
+import React, { forwardRef, useContext, useMemo, useLayoutEffect } from 'react';
+import { Card, context } from './ProfileNode';
 
-const EchoStack = ({echoes, ...props}) => {
+const EchoStack = forwardRef(({echoes, ...props}, ref) => {
+    const set = useContext(context);
+
+    const state = useMemo(
+        () => ({ position: props.position, connectedTo: props.connectedTo }),
+        [props]
+    );
+
+    useLayoutEffect(() => {
+        set(nodes => [...nodes, state]);
+        return () => void set(nodes => nodes.filter(n => n !== state));
+    }, [state, props]);
+
     return (
-        <group {...props}>
+        <group ref={ref} {...props}>
             {
                 Array.from(
                     {
@@ -23,6 +35,6 @@ const EchoStack = ({echoes, ...props}) => {
             }
         </group>
     );
-};
+});
 
 export default EchoStack;
