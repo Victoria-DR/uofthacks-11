@@ -1,7 +1,7 @@
 
 /**
  * Helper function that returns profileData with the connectedTo array populated
- * @param {*} profileData Profile[]
+ * @param {Profile[]} profileData 
  * @returns Profile[]
  */
 export const calculateConnections = (profileData) => {
@@ -25,7 +25,7 @@ export const calculateConnections = (profileData) => {
 /**
  * Helper function that returns a dictionary of echo ids that are shared by more than one profile.
  * The key is the echo id and the value is an array of profile ids that share the echo.
- * @param {*} profileData Profile[]
+ * @param {Profile[]} profileData 
  * @returns Map<echoId, profileId[]>
  */
 export const getCommonEchoes = (profileData) => {
@@ -53,4 +53,46 @@ export const getCommonEchoes = (profileData) => {
     }
 
     return res
+}
+
+/**
+ * Helper function that converts the output from the above algorithm into a dictionary of profile combinations that share echoes.
+ * @param {Map<int, int[]} commonEchoes 
+ * @returns 
+ */
+export const groupCommonEchoesByProfileCombination = (commonEchoes) => {
+    let res = {}
+    for (let echoId in commonEchoes) {
+        let profileIds = commonEchoes[echoId]
+        if (!res[profileIds]) {
+            res[profileIds] = []
+        }
+        res[profileIds].push(Number(echoId))
+    }
+    return res
+}
+
+/**
+ * Get all echoes from profileData
+ * @param {Profile[]} profileData 
+ * @returns 
+ */
+export const getAllEchoes = profileData =>
+    profileData.map(profile => profile.echoes).flat();
+
+
+/**
+ * Return the 3D coordinates of the center of gravity of the n provided profiles
+ * @param {*} profiles 
+ */
+export const calculateCenter = (profiles) => {
+    let x = 0;
+    let y = 0;
+    let z = 0;
+    for (let profile of profiles) {
+        x += profile.position[0];
+        y += profile.position[1];
+        z += profile.position[2];
+    }
+    return [x / profiles.length, y / profiles.length, z / profiles.length];
 }

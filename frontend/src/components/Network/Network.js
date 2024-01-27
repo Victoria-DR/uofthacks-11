@@ -7,9 +7,13 @@ import {
 import { geometry } from 'maath';
 import { ProfileNode, ProfileNodes } from './ProfileNode';
 import {
+    calculateCenter,
     calculateConnections,
+    getAllEchoes,
     getCommonEchoes,
+    groupCommonEchoesByProfileCombination,
 } from '../../helpers/network.helpers';
+import EchoStack from './EchoStack';
 
 extend(geometry);
 
@@ -18,6 +22,9 @@ const Network = ({profileData}) => {
     const processedProfileData = calculateConnections(profileData);
 
     const commonEchoes = getCommonEchoes(profileData);
+    const echoesByProfileCombination = groupCommonEchoesByProfileCombination(commonEchoes)
+
+    const allEchoes = getAllEchoes(profileData);
 
     return (
         <Canvas
@@ -42,6 +49,22 @@ const Network = ({profileData}) => {
                             )}
                         />
                     ))}
+                    {
+                        Object.entries(echoesByProfileCombination).map(([k, v], i) => {
+                            const profiles = k.split(',').map(id => profileData.find(profile => profile.id === Number(id)))
+                            return (
+                                <EchoStack
+                                    key={i}
+                                    echoes={
+                                        v.map(echoId => allEchoes.find(echo => echo.id === echoId))
+                                    }
+                                    position={
+                                        calculateCenter(profiles)
+                                    }
+                                />
+                            )
+                        })
+                    }
                 </ProfileNodes>
                 <MapControls makeDefault={false} />
             </ScrollControls>

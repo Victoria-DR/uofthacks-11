@@ -255,7 +255,7 @@ function Cards({
 }
 
 
-function Card({ url, active, hovered, ...props }) {
+export function Card({ url, active, hovered, ...props }) {
     const ref = useRef();
     useFrame((state, delta) => {
         const f = hovered ? 1.4 : active ? 1.25 : 1;

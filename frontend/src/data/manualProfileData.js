@@ -9,6 +9,7 @@ export const profileData = [
             new Echo(0, 'This is an echo', '2021-01-01', 'img1.jpg'),
             new Echo(1, 'This is an echo', '2021-01-01', 'img1.jpg'),
             new Echo(2, 'This is an echo', '2021-01-01', 'img1.jpg'),
+            new Echo(6, 'This is an echo', '2021-01-01', 'img1.jpg'),
             new Echo(4, 'This is an echo', '2021-01-01', 'img1.jpg'),
             new Echo(5, 'This is an echo', '2021-01-01', 'img1.jpg'),
         ],
@@ -32,7 +33,8 @@ export const profileData = [
         'Albert',
         'https://media.licdn.com/dms/image/D5603AQGF5GrVVQwdVw/profile-displayphoto-shrink_100_100/0/1666664119909?e=1711584000&v=beta&t=iMO6mqslcvmnZ5S4XNAuUIMXpl85o0AUi6CUFR6REbQ',
         [
-            new Echo(2, 'This is an echo', '2021-01-01', 'img1.jpg')
+            new Echo(2, 'This is an echo', '2021-01-01', 'img1.jpg'),
+            new Echo(6, 'This is an echo', '2021-01-01', 'img1.jpg')
         ],
         [-20, 5, 0]
         // [4],
