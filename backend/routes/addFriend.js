@@ -4,7 +4,7 @@ const addFriend = async(req, res, next) => {
   const response = await updateEntity(
     {
       "user": {
-        "S": req.body.email
+        "S": req.body.user
       }
     },
     process.env.AWS_DYNAMODB_TABLE_USERS,

@@ -11,7 +11,7 @@ const getAllEchoes = require('./routes/getAllEchoes');
 const getFriendEchoes = require('./routes/getFriendEchoes');
 const getEcho = require('./routes/getEcho');
 
-const getUserImage = require('./routes/getUserImage');
+const getUser = require('./routes/getUser');
 
 const shareEcho = require('./routes/shareEcho');
 
@@ -30,7 +30,7 @@ app.post('/get-all-echoes', getAllEchoes);
 app.post('/get-friend-echoes', getFriendEchoes);
 app.post('/get-echo', getEcho);
 
-app.post('/get-user-image', getUserImage);
+app.post('/get-user', getUser);
 
 app.post('/share-echo', shareEcho);
 
