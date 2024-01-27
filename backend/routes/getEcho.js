@@ -1,5 +1,5 @@
-const getEntity = require('../utils/getEntity');
 const downloadImage = require('../utils/downloadImage');
+const getEntity = require('../utils/getEntity');
 
 const getEcho = async(req, res, next) => {
   const dynamoDBResponse = await getEntity(
