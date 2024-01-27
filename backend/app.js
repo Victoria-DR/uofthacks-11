@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+const signUp = require('./routes/signUp');
 const addEcho = require('./routes/addEcho');
 const addFriend = require('./routes/addFriend');
 const getAllEchoes = require('./routes/getAllEchoes');
@@ -15,6 +16,7 @@ app.use(cors());
 
 app.use("/v1/api", require("./routes/userRouter"));
 
+app.post('/sign-up', signUp);
 app.post('/add-echo', addEcho);
 app.post('/add-friend', addFriend);
 app.post('/get-all-echoes', getAllEchoes);
