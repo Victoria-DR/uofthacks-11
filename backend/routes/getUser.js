@@ -1,3 +1,4 @@
+const bufferToBase64 = require('../utils/bufferToBase64');
 const downloadImage = require('../utils/downloadImage');
 const getEntity = require('../utils/getEntity');
 
@@ -18,7 +19,7 @@ const getUser = async(req, res, next) => {
     "hasAccount": dynamoDBResponse.Item.hasAccount.BOOL,
     "email": dynamoDBResponse.Item.email.S,
     "name": dynamoDBResponse.Item.name.S,
-    "image": userImage,
+    "image": bufferToBase64(userImage),
     "echoes": dynamoDBResponse.Item.echoes.L,
     "friends": dynamoDBResponse.Item.friends.L
   };
