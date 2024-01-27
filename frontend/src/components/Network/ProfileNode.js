@@ -8,7 +8,7 @@ import {
     forwardRef,
     useContext,
 } from 'react';
-import { extend, useFrame } from '@react-three/fiber';
+import { extend, useFrame, useThree } from '@react-three/fiber';
 import {
     Image,
     useScroll,
@@ -142,6 +142,7 @@ export const ProfileNode = forwardRef(({ children, ...props }, ref) => {
                 onPointerOver={hover}
                 onPointerOut={hover}
                 profileUrl={props.url}
+                nodePosition={props.position}
             />
             {/* <Cards
                 category="summer"
@@ -182,6 +183,7 @@ function Cards({
     profileUrl,
     ...props
 }) {
+    const { camera } = useThree();
     const [hovered, hover] = useState(null);
     const amount = Math.round(len * 22);
     const textPosition = from + (amount / 2 / amount) * len;
@@ -199,7 +201,20 @@ function Cards({
                 </Text>
             </Billboard>
             <Billboard position={[0, 0, 0]}>
-                <Image url={profileUrl}>
+                {/* User profile picture */}
+                <Image
+                    url={profileUrl}
+                    onPointerDown={() => {
+                        console.log('clicked');
+                        // camera.position.set(
+                        //     props.nodePosition[0],
+                        //     props.nodePosition[1],
+                        //     20
+                        // );
+                    }}
+                    onPointerOver={e => document.body.style.cursor = 'pointer'}
+                    onPointerOut={e => document.body.style.cursor = 'auto'}
+                >
                     <roundedPlaneGeometry
                         parameters={{ width: 5, height: 5 }}
                         args={[5, 5, 2.5]}
