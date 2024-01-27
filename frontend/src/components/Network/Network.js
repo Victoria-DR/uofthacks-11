@@ -11,7 +11,7 @@ extend(geometry);
 
 const Network = ({profileData}) => {
     const profileNodeRefs = Object.fromEntries(profileData.map((profile) => [profile.id, createRef()]))
-
+console.log(profileData)
     return (
         <Canvas
             dpr={[1, 1.5]}
@@ -28,7 +28,7 @@ const Network = ({profileData}) => {
                         <ProfileNode
                             key={i}
                             position={profile.position}
-                            url={profile.profileUrl}
+                            url={profile.profilePicture}
                             ref={profileNodeRefs[profile.id]}
                             connectedTo={profile.connectedTo.map(
                                 id => profileNodeRefs[id]
