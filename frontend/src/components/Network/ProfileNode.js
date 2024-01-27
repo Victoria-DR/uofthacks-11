@@ -30,6 +30,7 @@ export function ProfileNode({ children, ...props }) {
                 len={Math.PI * 2}
                 onPointerOver={hover}
                 onPointerOut={hover}
+                profileUrl={props.url}
             />
             {/* <Cards
                 category="summer"
@@ -67,6 +68,7 @@ function Cards({
     radius = 5.25,
     onPointerOver,
     onPointerOut,
+    profileUrl,
     ...props
 }) {
     const [hovered, hover] = useState(null);
@@ -86,7 +88,7 @@ function Cards({
                 </Text>
             </Billboard>
             <Billboard position={[0, 0, 0]}>
-                <Image url="https://media.licdn.com/dms/image/C5603AQGwbdEmfv3GLw/profile-displayphoto-shrink_400_400/0/1630555970406?e=1711584000&v=beta&t=TAvvs093bFjDaJSARO49cyv6iM2b4tAlR_10zrnZXlg">
+                <Image url={profileUrl}>
                     <roundedPlaneGeometry
                         parameters={{ width: 5, height: 5 }}
                         args={[5, 5, 2.5]}
