@@ -47,7 +47,9 @@ const Circle = forwardRef(
 );
 
 export const ProfileNodes = ({ children }) => {
+    const group = useRef();
     const [nodes, set] = useState([]);
+
     const lines = useMemo(() => {
         const lines = [];
         for (let node of nodes)
@@ -64,9 +66,17 @@ export const ProfileNodes = ({ children }) => {
         return lines;
     }, [nodes]);
 
+    useFrame((_, delta) =>
+        group.current.children.forEach(
+            group =>
+                (group.children[0].material.uniforms.dashOffset.value -=
+                    delta * 2.5)
+        )
+    );
+
     return (
         <context.Provider value={set}>
-            <group>
+            <group ref={group}>
                 {lines.map((line, index) => (
                     <group>
                         <QuadraticBezierLine
@@ -74,8 +84,11 @@ export const ProfileNodes = ({ children }) => {
                             {...line}
                             color="white"
                             dashed
-                            dashScale={50}
+                            dashScale={10}
                             gapSize={20}
+                            lineWidth={2}
+                            transparent
+                            opacity={0.5}
                         />
                         <QuadraticBezierLine
                             key={index}
@@ -83,7 +96,7 @@ export const ProfileNodes = ({ children }) => {
                             color="white"
                             lineWidth={2}
                             transparent
-                            opacity={0.15}
+                            opacity={0.25}
                         />
                     </group>
                 ))}

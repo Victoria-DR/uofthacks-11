@@ -15,19 +15,28 @@ const Network = ({profileData}) => {
     return (
         <Canvas
             dpr={[1, 1.5]}
-            camera={{ position: [0, 0, 20], zoom: 1, up: [0, 0, 1], far: 10000 }}
+            camera={{
+                position: [0, 0, 20],
+                zoom: 1,
+                up: [0, 0, 1],
+                far: 10000,
+            }}
         >
             <ScrollControls infinite makeDefault>
                 <ProfileNodes>
-                    {
-                        profileData.map((profile, i) => (
-                            <ProfileNode key={i} position={profile.position} url={profile.profileUrl} ref={profileNodeRefs[profile.id]} connectedTo={
-                                profile.connectedTo.map((id) => profileNodeRefs[id])
-                            } />
-                        ))
-                    }
+                    {profileData.map((profile, i) => (
+                        <ProfileNode
+                            key={i}
+                            position={profile.position}
+                            url={profile.profileUrl}
+                            ref={profileNodeRefs[profile.id]}
+                            connectedTo={profile.connectedTo.map(
+                                id => profileNodeRefs[id]
+                            )}
+                        />
+                    ))}
                 </ProfileNodes>
-                <MapControls makeDefault={false} />
+                <MapControls makeDefault={false}  />
             </ScrollControls>
         </Canvas>
     );
