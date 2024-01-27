@@ -185,7 +185,7 @@ function Cards({
 }) {
     const { camera } = useThree();
     const [hovered, hover] = useState(null);
-    const amount = Math.round(len * 22);
+    const amount = Math.round(len *5);
     const textPosition = from + (amount / 2 / amount) * len;
     return (
         <group {...props}>
@@ -279,7 +279,7 @@ export function Card({ url, active, hovered, ...props }) {
     );
 }
 
-function ActiveCard({ hovered, ...props }) {
+export function ActiveCard({ hovered, ...props }) {
     const ref = useRef();
     const name = 'lorem ipsum';
     useLayoutEffect(() => void (ref.current.material.zoom = 0.8), [hovered]);
