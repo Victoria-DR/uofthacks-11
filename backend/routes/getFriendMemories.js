@@ -1,5 +1,5 @@
-const getFriendMemories = () => {
-  console.log('getFriendMemories');
+const getFriendEchoes = () => {
+  console.log('getFriendEchoes');
 };
 
-module.exports = getFriendMemories;
+module.exports = getFriendEchoes;

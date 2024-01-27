@@ -2,23 +2,23 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-const addMemory = require('./routes/addMemory');
+const addEcho = require('./routes/addEcho');
 const addFriend = require('./routes/addFriend');
-const getAllMemories = require('./routes/getAllMemories');
-const getFriendMemories = require('./routes/getFriendMemories');
-const getMemory = require('./routes/getMemory');
-const shareMemory = require('./routes/shareMemory');
+const getAllEchoes = require('./routes/getAllEchoes');
+const getFriendEchoes = require('./routes/getFriendEchoes');
+const getEcho = require('./routes/getEcho');
+const shareEcho = require('./routes/shareEcho');
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.post('/add-memory', addMemory);
+app.post('/add-echo', addEcho);
 app.post('/add-friend', addFriend);
-app.post('/get-all-memories', getAllMemories);
-app.post('/get-friend-memories', getFriendMemories);
-app.post('/get-memory', getMemory);
-app.post('/share-memory', shareMemory);
+app.post('/get-all-echoes', getAllEchoes);
+app.post('/get-friend-echoes', getFriendEchoes);
+app.post('/get-echo', getEcho);
+app.post('/share-echo', shareEcho);
 
 app.listen(3001, () => {
   console.log('Server running on port 3001');

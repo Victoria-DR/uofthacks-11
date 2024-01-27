@@ -1,5 +1,5 @@
-const shareMemory = () => {
-  console.log('shareMemory');
+const shareEcho = () => {
+  console.log('shareEcho');
 };
 
-module.exports = shareMemory;
+module.exports = shareEcho;

@@ -1,5 +1,5 @@
-const getAllMemories = () => {
-  console.log('getAllMemories');
+const getAllEchoes = () => {
+  console.log('getAllEchoes');
 };
 
-module.exports = getAllMemories;
+module.exports = getAllEchoes;

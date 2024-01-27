@@ -1,5 +1,5 @@
-const addMemory = () => {
-  console.log('addMemory');
+const addEcho = () => {
+  console.log('addEcho');
 };
 
-module.exports = addMemory;
+module.exports = addEcho;
