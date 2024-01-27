@@ -11,14 +11,16 @@ const getUser = async(req, res, next) => {
     process.env.AWS_DYNAMODB_TABLE_USERS
   );
   const s3Response = await downloadImage(process.env.AWS_S3_BUCKET_USERS, dynamoDBResponse.Item.s3ImageKey.S);
+  const image = await s3Response.Body.transformToString();
 
   const response = {
     "user": dynamoDBResponse.Item.user.S,
     "name": dynamoDBResponse.Item.name.S,
-    "image": s3Response.Body.transformToString(),
+    "image": image,
     "echoes": dynamoDBResponse.Item.echoes.L,
     "friends": dynamoDBResponse.Item.friends.L
   };
+
   res.send(response);
 };
 
