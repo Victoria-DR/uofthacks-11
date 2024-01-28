@@ -1,91 +1,96 @@
-// SPDX-License-Identifier: MIT
+#[generate_trait]
+impl ERC721HelperImpl of ERC721HelperTrait {
+   ////////////////////////////////
+   // internal function to check if a token exists
+   ////////////////////////////////
+   fn _exists(self: @ContractState, token_id: u256) -> bool {
+      // check that owner of token is not zero
+      self.owner_of(token_id).is_non_zero()
+   }
 
-#[starknet::contract]
-mod AINFT {
-    use openzeppelin::token::erc721::ERC721Component;
-    use openzeppelin::introspection::src5::SRC5Component;
-    use openzeppelin::access::ownable::OwnableComponent;
-    use starknet::get_caller_address;
-    use starknet::ContractAddress;
-
-    component!(path: ERC721Component, storage: erc721, event: ERC721Event);
-    component!(path: SRC5Component, storage: src5, event: SRC5Event);
-    component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
-
-    #[abi(embed_v0)]
-    impl ERC721MetadataImpl = ERC721Component::ERC721MetadataImpl<ContractState>;
-    #[abi(embed_v0)]
-    impl ERC721MetadataCamelOnly = ERC721Component::ERC721MetadataCamelOnlyImpl<ContractState>;
-    #[abi(embed_v0)]
-    impl ERC721Impl = ERC721Component::ERC721Impl<ContractState>;
-    #[abi(embed_v0)]
-    impl ERC721CamelOnly = ERC721Component::ERC721CamelOnlyImpl<ContractState>;
-    #[abi(embed_v0)]
-    impl SRC5Impl = SRC5Component::SRC5Impl<ContractState>;
-    #[abi(embed_v0)]
-    impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
-    #[abi(embed_v0)]
-    impl OwnableCamelOnlyImpl = OwnableComponent::OwnableCamelOnlyImpl<ContractState>;
-
-    impl ERC721InternalImpl = ERC721Component::InternalImpl<ContractState>;
-    impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
-
-    #[storage]
-    struct Storage {
-        #[substorage(v0)]
-        erc721: ERC721Component::Storage,
-        #[substorage(v0)]
-        src5: SRC5Component::Storage,
-        #[substorage(v0)]
-        ownable: OwnableComponent::Storage,
+   ////////////////////////////////
+   // _is_approved_or_owner checks if an address is an approved spender or owner
+   ////////////////////////////////
+   fn _is_approved_or_owner(self: @ContractState, spender: ContractAddress, token_id: u256) -> bool {
+       let owner = self.owners.read(token_id);
+       spender == owner
+          || self.is_approved_for_all(owner, spender) 
+          || self.get_approved(token_id) == spender
     }
 
-    #[event]
-    #[derive(Drop, starknet::Event)]
-    enum Event {
-        #[flat]
-        ERC721Event: ERC721Component::Event,
-        #[flat]
-        SRC5Event: SRC5Component::Event,
-        #[flat]
-        OwnableEvent: OwnableComponent::Event,
+   ////////////////////////////////
+   // internal function that sets the token uri
+   ////////////////////////////////
+   fn _set_token_uri(ref self: ContractState, token_id: u256, token_uri: felt252) {
+        assert(self._exists(token_id), 'ERC721: invalid token ID');
+        self.token_uri.write(token_id, token_uri)
+   }
+
+   ////////////////////////////////
+   // internal function that performs the transfer logic
+   ////////////////////////////////
+   fn _transfer(ref self: ContractState, from: ContractAddress, to: ContractAddress, token_id: u256) {
+       // check that from address is equal to owner of token
+       assert(from == self.owner_of(token_id), 'ERC721: Caller is not owner');
+       // check that to address is not zero
+       assert(to.is_non_zero(), 'ERC721: transfer to 0 address');
+
+       // remove previously made approvals
+       self.token_approvals.write(token_id, Zeroable::zero());
+
+       // increase balance of to address, decrease balance of from address
+       self.balances.write(from, self.balances.read(from) - 1.into());
+       self.balances.write(to, self.balances.read(to) + 1.into());
+
+       // update token_id owner
+       self.owners.write(token_id, to);
+
+       // emit the Transfer event
+       self.emit(
+           Transfer{ from: from, to: to, token_id: token_id }
+       );
     }
 
-    #[constructor]
-    fn constructor(ref self: ContractState, owner: ContractAddress) {
-        self.erc721.initializer('AINFT', 'AFT');
-        self.ownable.initializer(owner);
-    }
+    ////////////////////////////////
+    // _mint function mints a new token to the to address
+    ////////////////////////////////
+    fn _mint(ref self: ContractState, to: ContractAddress, token_id: u256) {
+        assert(to.is_non_zero(), 'TO_IS_ZERO_ADDRESS');
 
-    #[generate_trait]
-    #[external(v0)]
-    impl ExternalImpl of ExternalTrait {
-        fn burn(ref self: ContractState, token_id: u256) {
-            let caller = get_caller_address();
-            assert(self.erc721._is_approved_or_owner(caller, token_id), ERC721Component::Errors::UNAUTHORIZED);
-            self.erc721._burn(token_id);
-        }
+        // Ensures token_id is unique
+        assert(!self.owner_of(token_id).is_non_zero(), 'ERC721: Token already minted');
 
-        fn safe_mint(
-            ref self: ContractState,
-            recipient: ContractAddress,
-            token_id: u256,
-            data: Span<felt252>,
-            token_uri: felt252,
-        ) {
-            self.ownable.assert_only_owner();
-            self.erc721._safe_mint(recipient, token_id, data);
-            self.erc721._set_token_uri(token_id, token_uri);
-        }
+        // Increase receiver balance
+        let receiver_balance = self.balances.read(to);
+        self.balances.write(to, receiver_balance + 1.into());
 
-        fn safeMint(
-            ref self: ContractState,
-            recipient: ContractAddress,
-            tokenId: u256,
-            data: Span<felt252>,
-            tokenURI: felt252,
-        ) {
-            self.safe_mint(recipient, tokenId, data, tokenURI);
-        }
-    }
-}
+        // Update token_id owner
+        self.owners.write(token_id, to);
+
+        // emit Transfer event
+        self.emit(
+            Transfer{ from: Zeroable::zero(), to: to, token_id: token_id }
+        );
+     }
+
+     ////////////////////////////////
+     // _burn function burns token from owner's account
+     ////////////////////////////////
+     fn _burn(ref self: ContractState, token_id: u256) {
+        let owner = self.owner_of(token_id);
+
+        // Clear approvals
+        self.token_approvals.write(token_id, Zeroable::zero());
+
+        // Decrease owner balance
+        let owner_balance = self.balances.read(owner);
+        self.balances.write(owner, owner_balance - 1.into());
+
+        // Delete owner
+        self.owners.write(token_id, Zeroable::zero());
+        // emit the Transfer event
+        self.emit(
+            Transfer{ from: owner, to: Zeroable::zero(), token_id: token_id }
+        );
+     }
+   }
