@@ -1,7 +1,6 @@
 import React from 'react';
 import { ChakraProvider, theme } from '@chakra-ui/react';
 import { Route, Routes } from 'react-router';
-import Navbar from './components/Navbar';
 import { createContext, useContext, useState } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
 import Main from './pages/Main';
@@ -9,6 +8,7 @@ import { UserProvider } from './contexts/UserContext';
 import AddFriends from './pages/AddFriends';
 import AddEcho from './pages/AddEcho';
 import Landing from './pages/Landing';
+import './assets/styles/index.css'
 
 export const EchoContext = createContext();
 
@@ -20,7 +20,6 @@ function App() {
         <EchoContext.Provider value={{ friendsEmails, setFriendsEmails }}>
             <UserProvider>
                 <ChakraProvider theme={theme}>
-                    <Navbar />
                     <Routes>
                         <Route path="/" element={<Landing />} />
                         { isAuthenticated && <Route path="/graph" element={<Main />} />}

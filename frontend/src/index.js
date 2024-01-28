@@ -16,7 +16,7 @@ root.render(
             domain="dev-qq83yx6nf5pq7v3e.us.auth0.com"
             clientId="grH6QlpDfiMKLBOetPQylrnXO0zO1F6L"
             authorizationParams={{
-                redirect_uri: 'http://localhost:3001/graph',
+                redirect_uri: 'http://localhost:3000/graph',
             }}
         >
             <BrowserRouter>
