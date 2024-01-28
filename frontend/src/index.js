@@ -5,16 +5,25 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom';
+import { Auth0Provider } from '@auth0/auth0-react';
 
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
 
 root.render(
     <StrictMode>
-        <BrowserRouter>
-            <ColorModeScript />
-            <App />
-        </BrowserRouter>
+        <Auth0Provider
+            domain="dev-qq83yx6nf5pq7v3e.us.auth0.com"
+            clientId="grH6QlpDfiMKLBOetPQylrnXO0zO1F6L"
+            authorizationParams={{
+                redirect_uri: 'http://localhost:3002/graph',
+            }}
+        >
+            <BrowserRouter>
+                <ColorModeScript />
+                <App />
+            </BrowserRouter>
+        </Auth0Provider>
     </StrictMode>
 );
 

@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne&display=swap');
+
+.landing {
+    background-color: #010323;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    cursor: url('https://api.iconify.design/tabler:circle.svg?color=%23f0f0f0'), auto;
+}
+
+.landing-text {
+    display: flex;
+    flex-direction: column;
+    width: 35vw;
+    margin-left: 8.5vw;
+}
+
+.landing-logo {
+    width: 327.12px;
+    height: 84px;
+}
+
+.landing-copy {
+    color: #F0F0F0;
+    font-family: Syne;
+    font-size: 24px;
+}
+
+.landing-radial-gradient {
+    background: radial-gradient(circle at center, #FFA41B, #010323 75%);
+    width: 48vw;
+    height: 48vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.landing-button {
+    color: #F0F0F0;
+    font-family: Syne;
+    font-size: 36px;
+    -webkit-transition: color 0.5s;
+    -moz-transition:    color 0.5s;
+    -ms-transition:     color 0.5s;
+    -o-transition:      color 0.5s;
+    transition:         color 0.5s;
+}
+
+.landing-button:hover {
+    color: #010323;
+    cursor: url('https://api.iconify.design/tabler:circle-filled.svg?color=%23f0f0f0'), auto;
+}

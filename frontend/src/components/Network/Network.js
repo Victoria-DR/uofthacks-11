@@ -1,11 +1,9 @@
 import React, { createRef, useEffect } from 'react';
 import { Canvas, extend } from '@react-three/fiber';
-import {
-    ScrollControls,
-    MapControls
-} from '@react-three/drei';
+import { ScrollControls, MapControls, Html } from '@react-three/drei';
 import { geometry } from 'maath';
 import { ProfileNode, ProfileNodes } from './ProfileNode';
+import AddFriends from '../../pages/AddFriends';
 import {
     calculateCenter,
     calculateConnections,
@@ -19,6 +17,7 @@ extend(geometry);
 
 const Network = ({profileData}) => {
     const profileNodeRefs = Object.fromEntries(profileData.map((profile) => [profile.id, createRef()]))
+    const [isOpen, setIsOpen] = React.useState(false);
     const processedProfileData = calculateConnections(profileData);
     
     const commonEchoes = getCommonEchoes(profileData);
@@ -39,7 +38,10 @@ const Network = ({profileData}) => {
                 far: 10000,
             }}
         >
-            <ScrollControls infinite makeDefault>
+            {/* <Html>
+                <AddFriends isOpen={isOpen} onClose={() => setIsOpen(false)} />
+            </Html> */}
+            <ScrollControls pages={1} infinite makeDefault>
                 <ProfileNodes>
                     {
                         processedProfileData.map((profile, i) => (
@@ -79,7 +81,5 @@ const Network = ({profileData}) => {
         </Canvas>
     );
 };
-
-
 
 export default Network;
