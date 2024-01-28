@@ -188,7 +188,7 @@ const Main = () => {
         <div className="main">
             <Box className="main-box">
                 <img className="main-logo" src={Logo} alt="echo logo" />
-                <Network className="main-network" setProfilePositions(profileData) />
+                <Network className="main-network" profileData={setProfilePositions(profileData)} />
                 <button
                     className="main-add-button"
                     id="add-friend-button"
