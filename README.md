@@ -31,7 +31,7 @@ UX: Prototypes were designed and prototyped on **Figma** to create UI elements i
 
 **Jason:** I learned Three.js using the React Three library to create interactive 3D visuals in the browser, involving 3D trigonometry and geometry. I also learned about graph and network theory, as well as Bezier curves.
 
-**Satyam:**
+**Satyam:** I learned how to create smart contracts on starknet using cairo, learned about the different ERC types and their usecases, deployed my first ERC721(NFT) smart contract and learned how to use IPFS to upload images and get it's link that we are passing for minting nfts.
 
 **Victoria:** Using AWS Rekognition for facial comparison, integrating AWS S3 buckets and DynamoDB tables, how to deal with a mess of image formats, and implementing Auth0 for authentication in a React app.
 
