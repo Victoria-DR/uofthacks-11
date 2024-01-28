@@ -20,7 +20,7 @@ import { easing, geometry } from 'maath';
 
 extend(geometry);
 
-const context = createContext();
+export const context = createContext();
 
 const Circle = forwardRef(
     (
@@ -185,7 +185,7 @@ function Cards({
 }) {
     const { camera } = useThree();
     const [hovered, hover] = useState(null);
-    const amount = Math.round(len * 22);
+    const amount = Math.round(len *5);
     const textPosition = from + (amount / 2 / amount) * len;
     return (
         <group {...props}>
@@ -255,7 +255,7 @@ function Cards({
 }
 
 
-function Card({ url, active, hovered, ...props }) {
+export function Card({ url, active, hovered, ...props }) {
     const ref = useRef();
     useFrame((state, delta) => {
         const f = hovered ? 1.4 : active ? 1.25 : 1;
@@ -279,7 +279,7 @@ function Card({ url, active, hovered, ...props }) {
     );
 }
 
-function ActiveCard({ hovered, ...props }) {
+export function ActiveCard({ hovered, ...props }) {
     const ref = useRef();
     const name = 'lorem ipsum';
     useLayoutEffect(() => void (ref.current.material.zoom = 0.8), [hovered]);

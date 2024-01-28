@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-const signUp = require('./routes/signUp');
+const createUser = require('./routes/createUser');
 
 const addEcho = require('./routes/addEcho');
 const addFriend = require('./routes/addFriend');
@@ -15,12 +15,10 @@ const getUser = require('./routes/getUser');
 const shareEcho = require('./routes/shareEcho');
 
 const app = express();
-app.use(express.json({ limit: '1mb' }));
+app.use(express.json({ limit: '10mb' }));
 app.use(cors());
 
-app.use("/v1/api", require("./routes/userRouter"));
-
-app.post('/sign-up', signUp);
+app.post('/create-user', createUser);
 
 app.post('/add-echo', addEcho);
 app.post('/add-friend', addFriend);
@@ -32,8 +30,8 @@ app.post('/get-user', getUser);
 
 app.post('/share-echo', shareEcho);
 
-app.listen(3001, () => {
-  console.log('Server running on port 3001');
+app.listen(4000, () => {
+  console.log('Server running on port 4000');
 });
 
 module.exports = app;
