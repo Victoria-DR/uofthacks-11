@@ -1,96 +1,91 @@
-#[generate_trait]
-impl ERC721HelperImpl of ERC721HelperTrait {
-   ////////////////////////////////
-   // internal function to check if a token exists
-   ////////////////////////////////
-   fn _exists(self: @ContractState, token_id: u256) -> bool {
-      // check that owner of token is not zero
-      self.owner_of(token_id).is_non_zero()
-   }
+use starknet::ContractAddress;
 
-   ////////////////////////////////
-   // _is_approved_or_owner checks if an address is an approved spender or owner
-   ////////////////////////////////
-   fn _is_approved_or_owner(self: @ContractState, spender: ContractAddress, token_id: u256) -> bool {
-       let owner = self.owners.read(token_id);
-       spender == owner
-          || self.is_approved_for_all(owner, spender) 
-          || self.get_approved(token_id) == spender
-    }
+#[starknet::interface]
+trait INFTContract<TContractState> {
+fn get_nft(self: @TContractState,token_id: u128) -> NFTContract::NFT;
+fn mint(ref self: TContractState, to: ContractAddress,token_id:u128, token_uri: felt252) -> felt252;
+fn transfer(ref self: TContractState,to: ContractAddress,token_id:u128) -> u128;
+}
 
-   ////////////////////////////////
-   // internal function that sets the token uri
-   ////////////////////////////////
-   fn _set_token_uri(ref self: ContractState, token_id: u256, token_uri: felt252) {
-        assert(self._exists(token_id), 'ERC721: invalid token ID');
-        self.token_uri.write(token_id, token_uri)
-   }
 
-   ////////////////////////////////
-   // internal function that performs the transfer logic
-   ////////////////////////////////
-   fn _transfer(ref self: ContractState, from: ContractAddress, to: ContractAddress, token_id: u256) {
-       // check that from address is equal to owner of token
-       assert(from == self.owner_of(token_id), 'ERC721: Caller is not owner');
-       // check that to address is not zero
-       assert(to.is_non_zero(), 'ERC721: transfer to 0 address');
+#[starknet::contract]
+mod NFTContract {
+ 
 
-       // remove previously made approvals
-       self.token_approvals.write(token_id, Zeroable::zero());
+use core::serde::Serde;
+use starknet::ContractAddress;
+use starknet::get_caller_address;
 
-       // increase balance of to address, decrease balance of from address
-       self.balances.write(from, self.balances.read(from) - 1.into());
-       self.balances.write(to, self.balances.read(to) + 1.into());
+#[storage]
+struct Storage {
+// Counter variable
+owners: LegacyMap<u128, ContractAddress>,
+token_uri: LegacyMap<u128, felt252>,
 
-       // update token_id owner
-       self.owners.write(token_id, to);
+}
 
-       // emit the Transfer event
-       self.emit(
-           Transfer{ from: from, to: to, token_id: token_id }
-       );
-    }
+#[derive(Drop, Serde)]
+pub struct NFT{
+owner: ContractAddress,
+token_id: u128,
+token_uri: felt252,
+}
+ 
 
-    ////////////////////////////////
-    // _mint function mints a new token to the to address
-    ////////////////////////////////
-    fn _mint(ref self: ContractState, to: ContractAddress, token_id: u256) {
-        assert(to.is_non_zero(), 'TO_IS_ZERO_ADDRESS');
 
-        // Ensures token_id is unique
-        assert(!self.owner_of(token_id).is_non_zero(), 'ERC721: Token already minted');
+#[constructor]
+fn constructor(ref self: ContractState, to: ContractAddress,token_id:u128, token_uri: felt252) {
 
-        // Increase receiver balance
-        let receiver_balance = self.balances.read(to);
-        self.balances.write(to, receiver_balance + 1.into());
+self.owners.write(token_id, to);
+self.token_uri.write(token_id,token_uri);
 
-        // Update token_id owner
-        self.owners.write(token_id, to);
+}
 
-        // emit Transfer event
-        self.emit(
-            Transfer{ from: Zeroable::zero(), to: to, token_id: token_id }
-        );
-     }
+#[abi(embed_v0)]
+impl NFTContract of super::INFTContract<ContractState> {
+ 
 
-     ////////////////////////////////
-     // _burn function burns token from owner's account
-     ////////////////////////////////
-     fn _burn(ref self: ContractState, token_id: u256) {
-        let owner = self.owner_of(token_id);
+fn get_nft(self: @ContractState, token_id: u128) -> NFT{
+ 
 
-        // Clear approvals
-        self.token_approvals.write(token_id, Zeroable::zero());
+let nft_owner = self.owners.read(token_id);
+let contract_caller = get_caller_address();
+assert(nft_owner != contract_caller, 'NFT Doesnt exists');
 
-        // Decrease owner balance
-        let owner_balance = self.balances.read(owner);
-        self.balances.write(owner, owner_balance - 1.into());
+NFT{owner: nft_owner,token_id: token_id,token_uri:self.token_uri.read(token_id)}
 
-        // Delete owner
-        self.owners.write(token_id, Zeroable::zero());
-        // emit the Transfer event
-        self.emit(
-            Transfer{ from: owner, to: Zeroable::zero(), token_id: token_id }
-        );
-     }
-   }
+}
+ 
+
+
+fn mint(ref self: ContractState, to: ContractAddress,token_id:u128, token_uri: felt252) -> felt252 {
+
+let nft_owner = self.owners.read(token_id);
+let contract_caller = get_caller_address();
+ 
+
+assert(nft_owner != contract_caller, 'NFT Doesnt exists');
+
+self.owners.write(token_id,to);
+self.token_uri.write(token_id, token_uri);
+
+return self.token_uri.read(token_id);
+}
+
+fn transfer(ref self: ContractState,to: ContractAddress,token_id:u128) -> u128{
+
+let nft_owner = self.owners.read(token_id);
+let contract_caller = get_caller_address();
+ 
+
+assert(nft_owner != contract_caller, 'NFT Doesnt exists');
+ 
+
+self.owners.write(token_id, to);
+
+return token_id;
+
+}
+
+}
+}
