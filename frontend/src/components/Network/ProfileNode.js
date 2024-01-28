@@ -204,7 +204,8 @@ function Cards({
             <Billboard position={[0, 0, 0]}>
                 {/* User profile picture */}
                 <Image
-                    url={profileUrl}
+                // imageSrc={URL.createObjectUrl(profileUrl)}
+                    url={window.URL.createObjectUrl(profileUrl)}
                     onPointerDown={() => {
                         console.log('clicked');
                         // camera.position.set(
@@ -213,8 +214,10 @@ function Cards({
                         //     20
                         // );
                     }}
-                    onPointerOver={e => document.body.style.cursor = 'pointer'}
-                    onPointerOut={e => document.body.style.cursor = 'auto'}
+                    onPointerOver={e =>
+                        (document.body.style.cursor = 'pointer')
+                    }
+                    onPointerOut={e => (document.body.style.cursor = 'auto')}
                 >
                     <roundedPlaneGeometry
                         parameters={{ width: 5, height: 5 }}

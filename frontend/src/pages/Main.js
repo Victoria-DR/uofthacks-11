@@ -20,6 +20,7 @@ import {
 import { setProfilePositions } from '../helpers/graph.helpers';
 import { ActiveEchoProvider } from '../contexts/ActiveEchoContext';
 import Echo from '../components/Echo';
+import { Profile } from '../data/types'
 
 
 const Main = () => {
@@ -190,7 +191,13 @@ const Main = () => {
     const getProfileData = useCallback(async () => {
         const response = await UserService.getUser(userId);
         const res = await Promise.all(response.data.friends.map(async friend => {
-            return (await UserService.getUser(friend['S'])).data;
+            const rawProfile = (await UserService.getUser(friend['S'])).data;
+            return new Profile(
+                rawProfile.userId,
+                rawProfile.name,
+                rawProfile.image,
+                rawProfile.echoes.map(echo => echo['S']),
+            )
         }));
         return res;
     }, [userId])
@@ -198,6 +205,7 @@ const Main = () => {
     useEffect(() => {
         setLoading(true);
         getProfileData().then(res => {
+            console.log(res)
             setProfileData(res);
             setLoading(false);
         });
@@ -213,7 +221,7 @@ const Main = () => {
                         !loading && (
                             <Network
                                 className="main-network"
-                                profileData={setProfilePositions(profileData)}
+                                profileData={profileData}
                             />
                         )
                     }

@@ -43,38 +43,44 @@ const Network = ({profileData}) => {
             </Html> */}
             <ScrollControls pages={1} infinite makeDefault>
                 <ProfileNodes>
-                    {
-                        processedProfileData.map((profile, i) => (
-                            <ProfileNode
-                                key={i}
-                                position={profile.position}
-                                url={profile.profilePicture}
-                                ref={profileNodeRefs[profile.id]}
-                                // connectedTo={profile.connectedTo.map(
-                                //     id => profileNodeRefs[id]
-                                // )}
-                                connectedTo={[]}
-                            />
-                        ))
-                    }
-                    {
-                        Object.entries(echoesByProfileCombination).map(([k, v], i) => {
-                            const profiles = k.split(',').map(id => profileData.find(profile => profile.id === Number(id)))
+                    {processedProfileData.map((profile, i) => (
+                        <ProfileNode
+                            key={i}
+                            position={profile.position}
+                            url={profile.profilePicture}
+                            ref={profileNodeRefs[profile.id]}
+                            // connectedTo={profile.connectedTo.map(
+                            //     id => profileNodeRefs[id]
+                            // )}
+                            connectedTo={[]}
+                        />
+                    ))}
+                    {Object.entries(echoesByProfileCombination).map(
+                        ([k, v], i) => {
+                            const profiles = k
+                                .split(',')
+                                .map(id =>
+                                    profileData.find(
+                                        profile => profile.id === Number(id)
+                                    )
+                                );
                             return (
                                 <EchoStack
                                     key={i}
-                                    echoes={
-                                        v.map(echoId => allEchoes.find(echo => echo.id === echoId))
-                                    }
-                                    position={
-                                        calculateCenter(profiles)
-                                    }
+                                    echoes={v.map(echoId =>
+                                        allEchoes.find(
+                                            echo => echo.id === echoId
+                                        )
+                                    )}
+                                    position={calculateCenter(profiles)}
                                     ref={echoStackRefs[i]}
-                                    connectedTo={profiles.map(profile => profileNodeRefs[profile.id])}
+                                    connectedTo={profiles.map(
+                                        profile => profileNodeRefs[profile.id]
+                                    )}
                                 />
-                            )
-                        })
-                    }
+                            );
+                        }
+                    )}
                 </ProfileNodes>
                 <MapControls makeDefault={false} />
             </ScrollControls>
