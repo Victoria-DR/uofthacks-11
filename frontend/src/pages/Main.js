@@ -9,7 +9,6 @@ import Logo from '../assets/images/logo.svg';
 import EXIF from 'exif-js';
 import EchoService from '../services/EchoService';
 import '../assets/styles/Main.css';
-
 import {
     Modal,
     ModalOverlay,
@@ -18,6 +17,8 @@ import {
     ModalBody,
     ModalCloseButton,
 } from '@chakra-ui/react';
+import { setProfilePositions } from '../helpers/graph.helpers';
+
 
 const Main = () => {
     // AUTH0
@@ -187,7 +188,7 @@ const Main = () => {
         <div className="main">
             <Box className="main-box">
                 <img className="main-logo" src={Logo} alt="echo logo" />
-                <Network className="main-network" profileData={profileData} />
+                <Network className="main-network" setProfilePositions(profileData) />
                 <button
                     className="main-add-button"
                     id="add-friend-button"
