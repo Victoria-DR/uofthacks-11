@@ -21,6 +21,7 @@ import { setProfilePositions } from '../helpers/graph.helpers';
 import { ActiveEchoProvider } from '../contexts/ActiveEchoContext';
 import Echo from '../components/Echo';
 import { Profile, Echo as EchoClass } from '../data/types'
+import FriendService from '../services/FriendService';
 
 
 const Main = () => {
@@ -62,7 +63,7 @@ const Main = () => {
     const handleAddFriend = async () => {
         const file = friendImage;
         const base64 = await convertBase64(file);
-        UserService.addFriend(userId, friendName, base64);
+        FriendService.addFriend(userId, friendName, base64);
         setFriendOpen(false);
     };
 
