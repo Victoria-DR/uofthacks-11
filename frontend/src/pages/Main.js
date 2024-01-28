@@ -6,6 +6,8 @@ import { profileData } from '../data/manualProfileData';
 import UserService from '../services/UserService';
 import { useUser } from '../contexts/UserContext';
 import { setProfilePositions } from '../helpers/graph.helpers';
+import { ActiveEchoProvider } from '../contexts/ActiveEchoContext';
+import Echo from '../components/Echo/Echo';
 
 const Main = () => {
     const { user } = useAuth0();
@@ -18,10 +20,12 @@ const Main = () => {
     }, [user, setContextUserId]);
 
     return (
-        <Box w={'100%'} h={'100vh'} bg={'#15151f'}>
-            <Network profileData={setProfilePositions(profileData)} />
-            {/* <UploadImage /> */}
-        </Box>
+        <ActiveEchoProvider>
+            <Box w={'100%'} h={'100vh'} bg={'#15151f'}>
+                <Network profileData={setProfilePositions(profileData)} />
+            </Box>
+            <Echo />
+        </ActiveEchoProvider>
     );
 };
 
