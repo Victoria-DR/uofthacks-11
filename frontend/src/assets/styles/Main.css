@@ -60,3 +60,16 @@
 #add-echo-button {
     right: 32px;
 }
+
+.main-modal-header {
+    font-family: Syne;
+    font-weight: bold;
+    font-size: 32px !important;
+}
+
+.main-modal-button {
+    background-color: #FFA41B !important;
+    color: #010323 !important;
+    font-family: Inter !important;
+    font-weight: normal !important;
+}
