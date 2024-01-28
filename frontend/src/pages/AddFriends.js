@@ -1,22 +1,15 @@
 import React from 'react';
 import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
     Box,
 } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/react';
-import { useContext } from 'react';
-import axios from 'axios';
+import { useUser } from '../contexts/UserContext';
+import UserService from '../services/UserService';
 
 const AddFriends = ({ isOpen, onOpen, onClose }) => {
     const [image, setImage] = React.useState(null);
     const [friendName, setFriendName] = React.useState(null);
-    const [imageBase64, setImageBase64] = React.useState(null);
+    const { userId } = useUser();
 
     const convertBase64 = file => {
         return new Promise((resolve, reject) => {
@@ -34,18 +27,7 @@ const AddFriends = ({ isOpen, onOpen, onClose }) => {
     const handleAddFriend = async () => {
         const file = image;
         const base64 = await convertBase64(file);
-        setImageBase64(base64);
-        await axios
-            .post('http://localhost:5000/add-friend', {
-                name: friendName,
-                image: base64,
-            })
-            .then(res => {
-                console.log(res);
-            })
-            .catch(err => {
-                console.log(err);
-            });
+        UserService.addFriend(userId, friendName, base64)
     };
 
     const CustomImageButton = () => (
@@ -83,7 +65,13 @@ const AddFriends = ({ isOpen, onOpen, onClose }) => {
                 justifyContent={'center'}
                 flexDirection={'column'}
             >
-                <Box backgroundColor={"#F0F0F0"} padding={"10px"} display={"flex"} borderRadius={"8px"} flexDirection={"column"}>
+                <Box
+                    backgroundColor={'#F0F0F0'}
+                    padding={'10px'}
+                    display={'flex'}
+                    borderRadius={'8px'}
+                    flexDirection={'column'}
+                >
                     {image && (
                         <>
                             <img
@@ -110,7 +98,7 @@ const AddFriends = ({ isOpen, onOpen, onClose }) => {
                             />
                             <Button
                                 style={{ marginTop: '10px' }}
-                                onClick={() => console.log('YO')}
+                                onClick={() => handleAddFriend()}
                             >
                                 Add Friend
                             </Button>
@@ -119,7 +107,12 @@ const AddFriends = ({ isOpen, onOpen, onClose }) => {
                     )}
                     {!image && (
                         <>
-                            <h1 style={{ textAlign: 'center', fontWeight: "bold" }}>
+                            <h1
+                                style={{
+                                    textAlign: 'center',
+                                    fontWeight: 'bold',
+                                }}
+                            >
                                 Add a Friend
                             </h1>
                             <CustomImageButton />
