@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter&family=Syne:wght@700&display=swap');
 
 .main {
     cursor: url('https://api.iconify.design/tabler:circle.svg?color=%23f0f0f0'), auto;
@@ -59,6 +58,10 @@
 
 #add-echo-button {
     right: 32px;
+}
+
+.main-text {
+    font-family: Inter;
 }
 
 .main-modal-header {

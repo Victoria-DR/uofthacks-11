@@ -81,8 +81,7 @@ const Main = () => {
                     marginBottom: '8px',
                 }}
             />
-            <p>Upload Image</p>
-            <p style={{ fontSize: '14px' }}>Drag and drop image here</p>
+            <p className="main-text">Upload Image</p>
             <input
                 type="file"
                 style={{ display: 'none' }}
@@ -174,8 +173,7 @@ const Main = () => {
                     marginBottom: '8px',
                 }}
             />
-            <p>Upload Image</p>
-            <p style={{ fontSize: '14px' }}>Drag and drop image here</p>
+            <p className="main-text">Upload Image</p>
             <input
                 type="file"
                 style={{ display: 'none' }}
@@ -246,10 +244,10 @@ const Main = () => {
                                     }}
                                 >
                                     <input
+                                        className="main-text"
                                         style={{
-                                            marginTop: '10px',
                                             border: '1px solid black',
-                                            padding: '4px',
+                                            padding: '5px',
                                             borderRadius: '5px',
                                         }}
                                         type="text"
@@ -257,7 +255,7 @@ const Main = () => {
                                         onChange={e =>
                                             setFriendName(e.target.value)
                                         }
-                                        placeholder="Your friend's name"
+                                        placeholder="Friend's Name"
                                     />
                                     <Button
                                         className="main-modal-button"
@@ -269,17 +267,8 @@ const Main = () => {
                             </>
                         )}
                         {!friendImage && (
-                            <>
-                                <h1
-                                    style={{
-                                        textAlign: 'center',
-                                        fontWeight: 'bold',
-                                    }}
-                                >
-                                    Add a Friend
-                                </h1>
+
                                 <CustomFriendImageButton />
-                            </>
                         )}
                     </ModalBody>
                 </ModalContent>
@@ -316,10 +305,10 @@ const Main = () => {
                                     }}
                                 >
                                     <input
+                                        className="main-text"
                                         style={{
-                                            marginTop: '10px',
                                             border: '1px solid black',
-                                            padding: '4px',
+                                            padding: '5px',
                                             borderRadius: '5px',
                                         }}
                                         type="text"
@@ -327,7 +316,7 @@ const Main = () => {
                                         onChange={e =>
                                             setCaption(e.target.value)
                                         }
-                                        placeholder="Caption here"
+                                        placeholder="Caption"
                                     />
                                     {date && (
                                         <p style={{ marginTop: '10px' }}>
@@ -359,17 +348,7 @@ const Main = () => {
                             </>
                         )}
                         {!echoImage && (
-                            <>
-                                <h1
-                                    style={{
-                                        textAlign: 'center',
-                                        fontWeight: 'bold',
-                                    }}
-                                >
-                                    Add an Echo
-                                </h1>
-                                <CustomEchoImageButton />
-                            </>
+                            <CustomEchoImageButton />
                         )}
                     </ModalBody>
                 </ModalContent>
