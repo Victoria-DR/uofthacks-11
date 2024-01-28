@@ -1,18 +1,11 @@
 import React from 'react';
 import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
     Box,
 } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/react';
-import { useContext } from 'react';
-import axios from 'axios';
 import EXIF from 'exif-js';
+import EchoService from '../services/EchoService';
+import { useUser } from '../contexts/UserContext';
 
 const AddEcho = ({ isOpen, onOpen, onClose }) => {
     const [image, setImage] = React.useState(null);
@@ -21,6 +14,7 @@ const AddEcho = ({ isOpen, onOpen, onClose }) => {
     const [caption, setCaption] = React.useState(null);
     const [date, setDate] = React.useState(null);
     const [location, setLocation] = React.useState(null);
+    const { userId } = useUser();
 
     const convertBase64 = (file) => {
         return new Promise((resolve, reject) => {
@@ -73,20 +67,15 @@ const AddEcho = ({ isOpen, onOpen, onClose }) => {
         setDate(dateTaken);
         setLocation(location);
 
-        // await axios
-        //     .post('http://localhost:5000/add-echo', {
-        //         name: friendName,
-        //         image: base64,
-        //         caption: caption,
-        //         date: dateTaken || new Date(),
-        //         location: location || null,
-        //     })
-        //     .then((res) => {
-        //         console.log(res);
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //     });
+        EchoService.addEcho(
+            userId,
+            {
+                text: caption,
+                imageSrc: base64,
+                date: dateTaken || new Date(),
+                location: location || '',
+            }
+        );
     };
 
     const CustomImageButton = () => (
@@ -159,7 +148,7 @@ const AddEcho = ({ isOpen, onOpen, onClose }) => {
                                     borderRadius: '5px',
                                 }}
                                 type="text"
-                                value={friendName}
+                                value={caption}
                                 onChange={(e) => setCaption(e.target.value)}
                                 placeholder="Caption Here"
                             />
