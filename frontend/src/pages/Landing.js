@@ -1,6 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import "../assets/styles/Landing.css";
 import Logo from "../assets/images/logo.svg";
+import Enter from "../assets/images/TablerArrowNarrowRight.svg";
 
 const Landing = () => {
   const { loginWithRedirect } = useAuth0();
@@ -12,7 +13,7 @@ const Landing = () => {
         <p className="landing-copy">Take a stroll down memory lane with Echo, your digital Rolodex of nostalgia. Echo transforms your memories into a 3D network.</p>
       </div>
       <div className="landing-radial-gradient">
-        <button className="landing-button" onClick={() => loginWithRedirect()}>Enter</button>
+        <img className="landing-button" onClick={() => loginWithRedirect()} src={Enter} alt="enter echo" />
       </div>
     </div>
   );
