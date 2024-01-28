@@ -9,6 +9,7 @@ import { UserProvider } from './contexts/UserContext';
 import AddFriends from './pages/AddFriends';
 import AddEcho from './pages/AddEcho';
 import Landing from './pages/Landing';
+import './assets/styles/index.css'
 
 export const EchoContext = createContext();
 

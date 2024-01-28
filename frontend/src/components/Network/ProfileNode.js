@@ -278,7 +278,11 @@ export function Card({ url, active, hovered, ...props }) {
                 scale={[1.618, 1, 1]}
                 side={THREE.DoubleSide}
                 onPointerDown={() => {
-                    setActiveEcho({ imageSrc: url })
+                    setActiveEcho({
+                        imageSrc: url,
+                        caption: 'Caption here',
+                        date: '2021-01-01'
+                    })
                     setIsActiveEchoOpen(true)
                 }}
             />
