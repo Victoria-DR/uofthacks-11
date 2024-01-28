@@ -11,6 +11,7 @@ const getUserEchoes = require('./routes/getUserEchoes');
 const getEcho = require('./routes/getEcho');
 
 const getUser = require('./routes/getUser');
+const getUserId = require('./routes/getUserId');
 
 const shareEcho = require('./routes/shareEcho');
 
@@ -27,6 +28,7 @@ app.post('/get-user-echoes', getUserEchoes);
 app.post('/get-echo', getEcho);
 
 app.post('/get-user', getUser);
+app.post('/get-user-id', getUserId);
 
 app.post('/share-echo', shareEcho);
 

@@ -4,12 +4,12 @@ import {
     theme,
 } from '@chakra-ui/react';
 import { useAuth0 } from "@auth0/auth0-react";
-import { Route, Routes, Navigate } from 'react-router';
+import { Route, Routes } from 'react-router';
 import Main from './pages/Main';
 import Landing from './pages/Landing';
 
 function App() {
-    const { user, isAuthenticated } = useAuth0();
+    const { isAuthenticated } = useAuth0();
 
     return (
         <ChakraProvider theme={theme}>
