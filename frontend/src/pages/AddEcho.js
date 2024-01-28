@@ -167,7 +167,7 @@ const AddEcho = ({ isOpen, onOpen, onClose }) => {
                                 style={{ marginTop: '10px' }}
                                 onClick={handleAddFriend}
                             >
-                                Add Friend
+                                Add Echo
                             </Button>
                         </>
                     )}
