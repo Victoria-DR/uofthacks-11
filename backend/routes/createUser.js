@@ -39,6 +39,37 @@ const createUser = async(req, res, next) => {
     })
   );
 
+  const rekognitionCreateUserResponse = await rekognitionClient.send(
+    new CreateUserCommand({
+      CollectionId: req.body.userId,
+      UserId: req.body.userId
+    })
+  );
+
+  const rekognitionIndexFacesResponse = await rekognitionClient.send(
+    new IndexFacesCommand({
+      CollectionId: req.body.userId,
+      Image: {
+        S3Object: {
+          Bucket: process.env.AWS_S3_BUCKET_USERS,
+          Name: imageKey
+        }
+      },
+      ExternalImageId: req.body.userId,
+      DetectionAttributes: ["ALL"],
+      MaxFaces: 1,
+      QualityFilter: "AUTO"
+    })
+  );
+
+  const rekognitionAssociateFacesResponse = await rekognitionClient.send(
+    new AssociateFacesCommand({
+      CollectionId: req.body.userId,
+      UserId: req.body.userId,
+      FaceIds: [ rekognitionIndexFacesResponse.FaceRecords[0].Face.FaceId ]
+    })
+  );
+
   res.send(userId);
 };
 
