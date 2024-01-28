@@ -30,8 +30,8 @@ app.post('/get-user', getUser);
 
 app.post('/share-echo', shareEcho);
 
-app.listen(3001, () => {
-  console.log('Server running on port 3001');
+app.listen(4000, () => {
+  console.log('Server running on port 4000');
 });
 
 module.exports = app;
