@@ -205,7 +205,7 @@ function Cards({
                 {/* User profile picture */}
                 <Image
                 // imageSrc={URL.createObjectUrl(profileUrl)}
-                    url={window.URL.createObjectUrl(profileUrl)}
+                    url={profileUrl}
                     onPointerDown={() => {
                         console.log('clicked');
                         // camera.position.set(
