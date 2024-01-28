@@ -53,6 +53,7 @@ const Network = ({profileData}) => {
                             //     id => profileNodeRefs[id]
                             // )}
                             connectedTo={[]}
+                            echoes={profile.echoes}
                         />
                     ))}
                     {Object.entries(echoesByProfileCombination).map(
@@ -61,7 +62,7 @@ const Network = ({profileData}) => {
                                 .split(',')
                                 .map(id =>
                                     profileData.find(
-                                        profile => profile.id === Number(id)
+                                        profile => profile.id === id
                                     )
                                 );
                             return (

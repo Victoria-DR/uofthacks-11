@@ -20,7 +20,7 @@ import {
 import { setProfilePositions } from '../helpers/graph.helpers';
 import { ActiveEchoProvider } from '../contexts/ActiveEchoContext';
 import Echo from '../components/Echo';
-import { Profile } from '../data/types'
+import { Profile, Echo as EchoClass } from '../data/types'
 
 
 const Main = () => {
@@ -188,6 +188,23 @@ const Main = () => {
         </label>
     );
 
+    const getEchos = useCallback(async (echoes) => {
+
+        
+        const res = await Promise.all(echoes.map(async echo => {
+            const rawEcho = (await EchoService.getEcho(echo['S'])).data;
+            return new EchoClass(
+                rawEcho.echoId,
+                rawEcho.text,
+                rawEcho.date,
+                rawEcho.image,
+                rawEcho.location,
+            )
+        }));
+        return res;
+    }, [])
+
+
     const getProfileData = useCallback(async () => {
         const response = await UserService.getUser(userId);
         const res = await Promise.all(response.data.friends.map(async friend => {
@@ -196,10 +213,16 @@ const Main = () => {
                 rawProfile.userId,
                 rawProfile.name,
                 rawProfile.image,
-                rawProfile.echoes.map(echo => echo['S']),
+                await getEchos(rawProfile.echoes),
             )
         }));
-        return res;
+        const selfProfile = new Profile(
+            userId,
+            response.data.name,
+            response.data.image,
+            await getEchos(response.data.echoes),
+        )
+        return [selfProfile].concat(res);
     }, [userId])
 
     useEffect(() => {

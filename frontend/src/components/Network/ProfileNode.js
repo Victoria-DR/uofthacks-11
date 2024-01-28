@@ -144,6 +144,7 @@ export const ProfileNode = forwardRef(({ children, ...props }, ref) => {
                 onPointerOut={hover}
                 profileUrl={props.url}
                 nodePosition={props.position}
+                echoes={props.echoes}
             />
             {/* <Cards
                 category="summer"
@@ -186,7 +187,8 @@ function Cards({
 }) {
     const { camera } = useThree();
     const [hovered, hover] = useState(null);
-    const amount = Math.round(len *5);
+    // const amount = Math.round(len *5);
+    const amount = props.echoes.length;
     const textPosition = from + (amount / 2 / amount) * len;
     return (
         <group {...props}>
@@ -249,7 +251,10 @@ function Cards({
                             rotation={[0, Math.PI / 2 + angle, 0]}
                             active={hovered !== null}
                             hovered={hovered === i}
-                            url={`/img${Math.floor(i % 10) + 1}.jpg`}
+                            // url={`/img${Math.floor(i % 10) + 1}.jpg`}
+                            url={props.echoes[i].imageSrc}
+                            caption={props.echoes[i].text}
+                            date={props.echoes[i].date}
                         />
                     );
                 }
@@ -283,8 +288,8 @@ export function Card({ url, active, hovered, ...props }) {
                 onPointerDown={() => {
                     setActiveEcho({
                         imageSrc: url,
-                        caption: 'Caption here',
-                        date: '2021-01-01'
+                        caption: props.caption || 'Untitled',
+                        date: props.date
                     })
                     setIsActiveEchoOpen(true)
                 }}
