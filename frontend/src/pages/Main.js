@@ -6,9 +6,9 @@ import { profileData } from '../data/manualProfileData';
 
 const Main = () => {
     return (
-        <Box w={'100vw'} h={'100vh'} bg={'#15151f'}>
+        <Box w={'100%'} h={'100vh'} bg={'#15151f'}>
             <Network profileData={profileData} />
-            <UploadImage />
+            {/* <UploadImage /> */}
         </Box>
     );
 };

@@ -1,16 +1,19 @@
 import React, { createRef } from 'react';
 import { Canvas, extend } from '@react-three/fiber';
-import {
-    ScrollControls,
-    MapControls
-} from '@react-three/drei';
+import { ScrollControls, MapControls, Html } from '@react-three/drei';
 import { geometry } from 'maath';
 import { ProfileNode, ProfileNodes } from './ProfileNode';
+import AddFriends from '../../pages/AddFriends';
+
 
 extend(geometry);
 
-const Network = ({profileData}) => {
-    const profileNodeRefs = Object.fromEntries(profileData.map((profile) => [profile.id, createRef()]))
+const Network = ({ profileData }) => {
+    const profileNodeRefs = Object.fromEntries(
+        profileData.map(profile => [profile.id, createRef()])
+    );
+    const [isOpen, setIsOpen] = React.useState(false);
+
 
     return (
         <Canvas
@@ -22,7 +25,10 @@ const Network = ({profileData}) => {
                 far: 10000,
             }}
         >
-            <ScrollControls infinite makeDefault>
+            {/* <Html>
+                <AddFriends isOpen={isOpen} onClose={() => setIsOpen(false)} />
+            </Html> */}
+            <ScrollControls pages={1} infinite makeDefault>
                 <ProfileNodes>
                     {profileData.map((profile, i) => (
                         <ProfileNode
@@ -36,12 +42,10 @@ const Network = ({profileData}) => {
                         />
                     ))}
                 </ProfileNodes>
-                <MapControls makeDefault={false}  />
+                <MapControls makeDefault={false} />
             </ScrollControls>
         </Canvas>
     );
 };
-
-
 
 export default Network;
