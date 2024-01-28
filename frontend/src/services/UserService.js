@@ -14,6 +14,12 @@ class UserService {
             userId
         });
     }
+
+    static async getUserId(email) {
+        return await ApiService.post('/get-user-id', {
+            email
+        });
+    }
 }
 
 export default UserService;

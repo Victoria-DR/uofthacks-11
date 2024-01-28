@@ -62,7 +62,7 @@ const addFriend = async(req, res, next) => {
           Name: friendImageKey
         }
       },
-      ExternalImageId: req.body.friendId,
+      ExternalImageId: friendId,
       DetectionAttributes: ["ALL"],
       MaxFaces: 1,
       QualityFilter: "AUTO"
