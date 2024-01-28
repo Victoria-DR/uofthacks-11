@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Box,
 } from '@chakra-ui/react';
@@ -6,6 +6,7 @@ import { Button } from '@chakra-ui/react';
 import EXIF from 'exif-js';
 import EchoService from '../services/EchoService';
 import { useUser } from '../contexts/UserContext';
+import {Web3Storage} from "web3.storage"
 
 const AddEcho = ({ isOpen, onOpen, onClose }) => {
     const [image, setImage] = React.useState(null);
@@ -15,6 +16,47 @@ const AddEcho = ({ isOpen, onOpen, onClose }) => {
     const [date, setDate] = React.useState(null);
     const [location, setLocation] = React.useState(null);
     const { userId } = useUser();
+    function makeStorageClient() {
+        return new Web3Storage({ token: "did:key:z6MkmxpPoEh5EQroAqMqS54xN6N1iWzFdnPQnnq2TXbiqUHa" })
+    }
+    const client = makeStorageClient()
+    async function storeFiles(base64, name) {
+        try {
+            console.log("Storing files...");
+    
+            // Convert base64 to a Blob
+            const blob = await fetch(base64).then(res => res.blob());
+    
+            // Create a file object from the Blob
+            const file = new File([blob], name, { type: blob.type });
+    
+            // Use an array of files in the put method
+            const cid = await client.put([file]);
+    
+            console.log("Stored files with CID:", cid);
+            return cid;
+        } catch (error) {
+            console.error("Error storing files:", error);
+            throw error;
+        }
+    }
+    
+    
+    
+    var cidOfImage;
+    async function onSubmit() {
+        console.log(image);
+        const base64 = await convertBase64(image);
+        setImageBase64(base64);
+        cidOfImage = await storeFiles(base64, "image");
+        console.log(cidOfImage);
+    }    
+
+    // useEffect(() => {
+    //     if(image) {
+    //         onSubmit();
+    //     }
+    // }, [image])
 
     const convertBase64 = (file) => {
         return new Promise((resolve, reject) => {
@@ -104,6 +146,7 @@ const AddEcho = ({ isOpen, onOpen, onClose }) => {
             <input
                 type="file"
                 style={{ display: 'none' }}
+                accept='image/*'
                 onChange={(e) => setImage(e.target.files[0])}
             />
         </label>
@@ -165,7 +208,9 @@ const AddEcho = ({ isOpen, onOpen, onClose }) => {
                             )}
                             <Button
                                 style={{ marginTop: '10px' }}
-                                onClick={handleAddFriend}
+                                // onClick={handleAddFriend}
+                                onClick={onSubmit}
+
                             >
                                 Add Echo
                             </Button>
