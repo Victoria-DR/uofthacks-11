@@ -1,8 +1,8 @@
-import { React, useEffect, useState } from 'react';
+import { React, useEffect, useState, useCallback } from 'react';
 import { Box, Button } from '@chakra-ui/react';
 import { useAuth0 } from '@auth0/auth0-react';
 import Network from '../components/Network/Network';
-import { profileData } from '../data/manualProfileData';
+// import { profileData } from '../data/manualProfileData';
 import UserService from '../services/UserService';
 import { useUser } from '../contexts/UserContext';
 import Logo from '../assets/images/logo.svg';
@@ -19,10 +19,13 @@ import {
 } from '@chakra-ui/react';
 import { setProfilePositions } from '../helpers/graph.helpers';
 import { ActiveEchoProvider } from '../contexts/ActiveEchoContext';
-import Echo from '../components/Echo/Echo';
+import Echo from '../components/Echo';
 
 
 const Main = () => {
+    const [profileData, setProfileData] = useState([]);
+    const [loading, setLoading] = useState(true);
+
     // AUTH0
     const { user } = useAuth0();
     const { setUserId: setContextUserId } = useUser();
@@ -184,12 +187,36 @@ const Main = () => {
         </label>
     );
 
+    const getProfileData = useCallback(async () => {
+        const response = await UserService.getUser(userId);
+        const res = await Promise.all(response.data.friends.map(async friend => {
+            return (await UserService.getUser(friend['S'])).data;
+        }));
+        return res;
+    }, [userId])
+
+    useEffect(() => {
+        setLoading(true);
+        getProfileData().then(res => {
+            setProfileData(res);
+            setLoading(false);
+        });
+    }, [userId, getProfileData]);
+
     return (
         <ActiveEchoProvider>
+            <Echo />
             <div className="main">
                 <Box className="main-box">
                     <img className="main-logo" src={Logo} alt="echo logo" />
-                    <Network className="main-network" profileData={setProfilePositions(profileData)} />
+                    {
+                        !loading && (
+                            <Network
+                                className="main-network"
+                                profileData={setProfilePositions(profileData)}
+                            />
+                        )
+                    }
                     <button
                         className="main-add-button"
                         id="add-friend-button"
@@ -269,10 +296,7 @@ const Main = () => {
                                     </div>
                                 </>
                             )}
-                            {!friendImage && (
-
-                                    <CustomFriendImageButton />
-                            )}
+                            {!friendImage && <CustomFriendImageButton />}
                         </ModalBody>
                     </ModalContent>
                 </Modal>
@@ -350,9 +374,7 @@ const Main = () => {
                                     </div>
                                 </>
                             )}
-                            {!echoImage && (
-                                <CustomEchoImageButton />
-                            )}
+                            {!echoImage && <CustomEchoImageButton />}
                         </ModalBody>
                     </ModalContent>
                 </Modal>
