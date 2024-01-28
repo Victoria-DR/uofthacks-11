@@ -57,17 +57,6 @@ const addEcho = async(req, res, next) => {
     );
 
     const friendId = rekognitionSearchUsersResponse.UserMatches[0].User.UserId;
-
-    const updateUserEntityResponse = await updateEntity(
-      {
-        "userId": {
-          "S": req.body.userId
-        }
-      },
-      process.env.AWS_DYNAMODB_TABLE_USERS,
-      "SET echoes = list_append(echoes, :value)",
-      { ':value': { "L": [ { "S": echoId } ] } }
-    );
     const updateFriendEntityResponse = await updateEntity(
       {
         "userId": {

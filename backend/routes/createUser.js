@@ -1,4 +1,4 @@
-const { CreateCollectionCommand } = require('@aws-sdk/client-rekognition');
+const { AssociateFacesCommand, CreateCollectionCommand, CreateUserCommand, IndexFacesCommand } = require('@aws-sdk/client-rekognition');
 const { v4: uuidv4 } = require('uuid');
 const { rekognitionClient } = require('../awsConfig');
 const addEntity = require('../utils/addEntity');
@@ -41,21 +41,21 @@ const createUser = async(req, res, next) => {
 
   const rekognitionCreateUserResponse = await rekognitionClient.send(
     new CreateUserCommand({
-      CollectionId: req.body.userId,
-      UserId: req.body.userId
+      CollectionId: userId,
+      UserId: userId
     })
   );
 
   const rekognitionIndexFacesResponse = await rekognitionClient.send(
     new IndexFacesCommand({
-      CollectionId: req.body.userId,
+      CollectionId: userId,
       Image: {
         S3Object: {
           Bucket: process.env.AWS_S3_BUCKET_USERS,
           Name: imageKey
         }
       },
-      ExternalImageId: req.body.userId,
+      ExternalImageId: userId,
       DetectionAttributes: ["ALL"],
       MaxFaces: 1,
       QualityFilter: "AUTO"
@@ -64,8 +64,8 @@ const createUser = async(req, res, next) => {
 
   const rekognitionAssociateFacesResponse = await rekognitionClient.send(
     new AssociateFacesCommand({
-      CollectionId: req.body.userId,
-      UserId: req.body.userId,
+      CollectionId: userId,
+      UserId: userId,
       FaceIds: [ rekognitionIndexFacesResponse.FaceRecords[0].Face.FaceId ]
     })
   );
