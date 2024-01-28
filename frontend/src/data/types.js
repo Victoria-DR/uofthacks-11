@@ -1,9 +1,10 @@
 export class Echo {
-    constructor(id, text, date, imageSrc) {
+    constructor(id, text, date, imageSrc, location = '') {
         this.id = id;
         this.text = text;
         this.date = date;
         this.imageSrc = imageSrc;
+        this.location = location;
     }
 
 }
