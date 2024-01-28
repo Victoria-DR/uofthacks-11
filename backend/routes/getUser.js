@@ -19,7 +19,7 @@ const getUser = async(req, res, next) => {
     "hasAccount": dynamoDBResponse.Item.hasAccount.BOOL,
     "email": dynamoDBResponse.Item.email.S,
     "name": dynamoDBResponse.Item.name.S,
-    "image": `${process.env.AWS_S3_BUCKET_USERS_LINK}${dynamoDBResponse.Item.userId.S}`,
+    "image": `${process.env.AWS_S3_BUCKET_USERS_LINK}${dynamoDBResponse.Item.s3ImageKey.S}`,
     "echoes": dynamoDBResponse.Item.echoes.L,
     "friends": dynamoDBResponse.Item.friends.L
   };
