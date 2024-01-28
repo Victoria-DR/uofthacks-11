@@ -37,9 +37,8 @@
 }
 
 .landing-button {
-    color: #F0F0F0;
-    font-family: Syne;
-    font-size: 36px;
+    height: 100px;
+    width: 100px;
     -webkit-transition: color 0.5s;
     -moz-transition:    color 0.5s;
     -ms-transition:     color 0.5s;
@@ -48,6 +47,5 @@
 }
 
 .landing-button:hover {
-    color: #010323;
     cursor: url('https://api.iconify.design/tabler:circle-filled.svg?color=%23f0f0f0'), auto;
 }

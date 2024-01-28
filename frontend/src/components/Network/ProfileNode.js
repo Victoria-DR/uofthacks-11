@@ -17,6 +17,7 @@ import {
     QuadraticBezierLine,
 } from '@react-three/drei';
 import { easing, geometry } from 'maath';
+import { useActiveEcho } from '../../contexts/ActiveEchoContext';
 
 extend(geometry);
 
@@ -257,6 +258,8 @@ function Cards({
 
 export function Card({ url, active, hovered, ...props }) {
     const ref = useRef();
+    const { setActiveEcho, setIsActiveEchoOpen } = useActiveEcho();
+
     useFrame((state, delta) => {
         const f = hovered ? 1.4 : active ? 1.25 : 1;
         easing.damp3(
@@ -274,6 +277,14 @@ export function Card({ url, active, hovered, ...props }) {
                 url={url}
                 scale={[1.618, 1, 1]}
                 side={THREE.DoubleSide}
+                onPointerDown={() => {
+                    setActiveEcho({
+                        imageSrc: url,
+                        caption: 'Caption here',
+                        date: '2021-01-01'
+                    })
+                    setIsActiveEchoOpen(true)
+                }}
             />
         </group>
     );
