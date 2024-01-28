@@ -65,7 +65,7 @@ export const profileData = [
         'Helen',
         'https://media.licdn.com/dms/image/D5603AQHXddeEOfmylw/profile-displayphoto-shrink_100_100/0/1691619522175?e=1711584000&v=beta&t=COtLtBHWhc-oHNo9JAoGHqKOZKs1E3BfpoL_bSu_K6I',
         [
-            new Echo(1, 'This is an echo', '2021-01-01', 'img1.jpg')
+            new Echo(1, 'This is an echo ', '2021-01-01', 'img1.jpg')
         ],
         [30, 18, 0]
         // [1, 0],

@@ -18,6 +18,8 @@ import {
     ModalCloseButton,
 } from '@chakra-ui/react';
 import { setProfilePositions } from '../helpers/graph.helpers';
+import { ActiveEchoProvider } from '../contexts/ActiveEchoContext';
+import Echo from '../components/Echo/Echo';
 
 
 const Main = () => {
@@ -183,177 +185,179 @@ const Main = () => {
     );
 
     return (
-        <div className="main">
-            <Box className="main-box">
-                <img className="main-logo" src={Logo} alt="echo logo" />
-                <Network className="main-network" profileData={setProfilePositions(profileData)} />
-                <button
-                    className="main-add-button"
-                    id="add-friend-button"
-                    onClick={() => setFriendOpen(true)}
-                >
-                    <img
-                        className="main-add-icon"
-                        src="https://api.iconify.design/tabler:user-plus.svg?color=%23f0f0f0"
-                        alt="add echo icon"
-                    />
-                    <p className="main-add-text">Add Friend</p>
-                </button>
-                <button
-                    className="main-add-button"
-                    id="add-echo-button"
-                    onClick={() => setEchoOpen(true)}
-                >
-                    <img
-                        className="main-add-icon"
-                        src="https://api.iconify.design/tabler:photo-circle-plus.svg?color=%23f0f0f0"
-                        alt="add user icon"
-                    />
-                    <p className="main-add-text">Add Echo</p>
-                </button>
-            </Box>
+        <ActiveEchoProvider>
+            <div className="main">
+                <Box className="main-box">
+                    <img className="main-logo" src={Logo} alt="echo logo" />
+                    <Network className="main-network" profileData={setProfilePositions(profileData)} />
+                    <button
+                        className="main-add-button"
+                        id="add-friend-button"
+                        onClick={() => setFriendOpen(true)}
+                    >
+                        <img
+                            className="main-add-icon"
+                            src="https://api.iconify.design/tabler:user-plus.svg?color=%23f0f0f0"
+                            alt="add echo icon"
+                        />
+                        <p className="main-add-text">Add Friend</p>
+                    </button>
+                    <button
+                        className="main-add-button"
+                        id="add-echo-button"
+                        onClick={() => setEchoOpen(true)}
+                    >
+                        <img
+                            className="main-add-icon"
+                            src="https://api.iconify.design/tabler:photo-circle-plus.svg?color=%23f0f0f0"
+                            alt="add user icon"
+                        />
+                        <p className="main-add-text">Add Echo</p>
+                    </button>
+                </Box>
 
-            <Modal
-                isOpen={isFriendOpen}
-                onClose={() => setFriendOpen(false)}
-                isCentered
-            >
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader className="main-modal-header">
-                        Add Friend
-                    </ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody style={{ marginBottom: '10px' }}>
-                        {friendImage && (
-                            <>
-                                <img
-                                    style={{
-                                        height: '400px',
-                                        width: '400px',
-                                        borderRadius: '10px',
-                                    }}
-                                    src={URL.createObjectURL(friendImage)}
-                                    alt="profile"
-                                />
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        marginTop: '10px',
-                                    }}
-                                >
-                                    <input
-                                        className="main-text"
+                <Modal
+                    isOpen={isFriendOpen}
+                    onClose={() => setFriendOpen(false)}
+                    isCentered
+                >
+                    <ModalOverlay />
+                    <ModalContent>
+                        <ModalHeader className="main-modal-header">
+                            Add Friend
+                        </ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody style={{ marginBottom: '10px' }}>
+                            {friendImage && (
+                                <>
+                                    <img
                                         style={{
-                                            border: '1px solid black',
-                                            padding: '5px',
-                                            borderRadius: '5px',
+                                            height: '400px',
+                                            width: '400px',
+                                            borderRadius: '10px',
                                         }}
-                                        type="text"
-                                        value={friendName}
-                                        onChange={e =>
-                                            setFriendName(e.target.value)
-                                        }
-                                        placeholder="Friend's Name"
+                                        src={URL.createObjectURL(friendImage)}
+                                        alt="profile"
                                     />
-                                    <Button
-                                        className="main-modal-button"
-                                        onClick={() => handleAddFriend()}
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            marginTop: '10px',
+                                        }}
                                     >
-                                        Add Friend
-                                    </Button>
-                                </div>
-                            </>
-                        )}
-                        {!friendImage && (
-
-                                <CustomFriendImageButton />
-                        )}
-                    </ModalBody>
-                </ModalContent>
-            </Modal>
-
-            <Modal
-                isOpen={isEchoOpen}
-                onClose={() => setEchoOpen(false)}
-                isCentered
-            >
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader className="main-modal-header">
-                        Add Echo
-                    </ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody style={{ marginBottom: '10px' }}>
-                        {echoImage && (
-                            <>
-                                <img
-                                    style={{
-                                        height: '400px',
-                                        width: '400px',
-                                        borderRadius: '10px',
-                                    }}
-                                    src={URL.createObjectURL(echoImage)}
-                                    alt="profile"
-                                />
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        marginTop: '10px',
-                                    }}
-                                >
-                                    <input
-                                        className="main-text"
-                                        style={{
-                                            border: '1px solid black',
-                                            padding: '5px',
-                                            borderRadius: '5px',
-                                        }}
-                                        type="text"
-                                        value={caption}
-                                        onChange={e =>
-                                            setCaption(e.target.value)
-                                        }
-                                        placeholder="Caption"
-                                    />
-                                    {date && (
-                                        <p style={{ marginTop: '10px' }}>
-                                            Date Taken: {date}
-                                        </p>
-                                    )}
-                                    {location && (
-                                        <p style={{ marginTop: '10px' }}>
-                                            Location:{' '}
-                                            {
-                                                location.latitude.split(
-                                                    'undefined'
-                                                )[0]
-                                            }{' '}
-                                            {
-                                                location.longitude.split(
-                                                    'undefined'
-                                                )[0]
+                                        <input
+                                            className="main-text"
+                                            style={{
+                                                border: '1px solid black',
+                                                padding: '5px',
+                                                borderRadius: '5px',
+                                            }}
+                                            type="text"
+                                            value={friendName}
+                                            onChange={e =>
+                                                setFriendName(e.target.value)
                                             }
-                                        </p>
-                                    )}
-                                    <Button
-                                        className="main-modal-button"
-                                        onClick={handleAddEcho}
+                                            placeholder="Friend's Name"
+                                        />
+                                        <Button
+                                            className="main-modal-button"
+                                            onClick={() => handleAddFriend()}
+                                        >
+                                            Add Friend
+                                        </Button>
+                                    </div>
+                                </>
+                            )}
+                            {!friendImage && (
+
+                                    <CustomFriendImageButton />
+                            )}
+                        </ModalBody>
+                    </ModalContent>
+                </Modal>
+
+                <Modal
+                    isOpen={isEchoOpen}
+                    onClose={() => setEchoOpen(false)}
+                    isCentered
+                >
+                    <ModalOverlay />
+                    <ModalContent>
+                        <ModalHeader className="main-modal-header">
+                            Add Echo
+                        </ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody style={{ marginBottom: '10px' }}>
+                            {echoImage && (
+                                <>
+                                    <img
+                                        style={{
+                                            height: '400px',
+                                            width: '400px',
+                                            borderRadius: '10px',
+                                        }}
+                                        src={URL.createObjectURL(echoImage)}
+                                        alt="profile"
+                                    />
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            marginTop: '10px',
+                                        }}
                                     >
-                                        Add Echo
-                                    </Button>
-                                </div>
-                            </>
-                        )}
-                        {!echoImage && (
-                            <CustomEchoImageButton />
-                        )}
-                    </ModalBody>
-                </ModalContent>
-            </Modal>
-        </div>
+                                        <input
+                                            className="main-text"
+                                            style={{
+                                                border: '1px solid black',
+                                                padding: '5px',
+                                                borderRadius: '5px',
+                                            }}
+                                            type="text"
+                                            value={caption}
+                                            onChange={e =>
+                                                setCaption(e.target.value)
+                                            }
+                                            placeholder="Caption"
+                                        />
+                                        {date && (
+                                            <p style={{ marginTop: '10px' }}>
+                                                Date Taken: {date}
+                                            </p>
+                                        )}
+                                        {location && (
+                                            <p style={{ marginTop: '10px' }}>
+                                                Location:{' '}
+                                                {
+                                                    location.latitude.split(
+                                                        'undefined'
+                                                    )[0]
+                                                }{' '}
+                                                {
+                                                    location.longitude.split(
+                                                        'undefined'
+                                                    )[0]
+                                                }
+                                            </p>
+                                        )}
+                                        <Button
+                                            className="main-modal-button"
+                                            onClick={handleAddEcho}
+                                        >
+                                            Add Echo
+                                        </Button>
+                                    </div>
+                                </>
+                            )}
+                            {!echoImage && (
+                                <CustomEchoImageButton />
+                            )}
+                        </ModalBody>
+                    </ModalContent>
+                </Modal>
+            </div>
+        </ActiveEchoProvider>
     );
 };
 
