@@ -39,7 +39,7 @@ const createUser = async(req, res, next) => {
     })
   );
 
-  res.send(s3Response.$metadata.httpStatusCode === 200 && dynamoDBResponse.$metadata.httpStatusCode === 200 && rekognitionResponse.$metadata.httpStatusCode === 200);
+  res.send(userId);
 };
 
 module.exports = createUser;
