@@ -38,7 +38,7 @@ const echoHelper = async(echoId) => {
     "date": dynamoDBResponse.Item.date.S,
     "location": dynamoDBResponse.Item.location.S,
     "caption": dynamoDBResponse.Item.caption.S,
-    "image": bufferToBase64(echoImage),
+    "image": `${process.env.AWS_S3_BUCKET_ECHOES_LINK}${dynamoDBResponse.Item.echoId.S}`,
     "share": dynamoDBResponse.Item.share.S
   };
 };
