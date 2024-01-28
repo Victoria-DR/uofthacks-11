@@ -11,20 +11,20 @@ const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
 
 root.render(
-    <Auth0Provider
-        domain="dev-qq83yx6nf5pq7v3e.us.auth0.com"
-        clientId="grH6QlpDfiMKLBOetPQylrnXO0zO1F6L"
-        authorizationParams={{
-            redirect_uri: "http://localhost:3002/graph",
-        }}
-    >
-        <StrictMode>
+    <StrictMode>
+        <Auth0Provider
+            domain="dev-qq83yx6nf5pq7v3e.us.auth0.com"
+            clientId="grH6QlpDfiMKLBOetPQylrnXO0zO1F6L"
+            authorizationParams={{
+                redirect_uri: 'http://localhost:3002/graph',
+            }}
+        >
             <BrowserRouter>
                 <ColorModeScript />
                 <App />
             </BrowserRouter>
-        </StrictMode>
-    </Auth0Provider>
+        </Auth0Provider>
+    </StrictMode>
 );
 
 // If you want your app to work offline and load faster, you can change
